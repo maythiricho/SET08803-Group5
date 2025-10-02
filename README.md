@@ -1,0 +1,2 @@
+# Purpose
+This repository has been created for the Code Review Assessment. It contains the project files and code that will be reviewed as part of the coursework. The purpose of this repository is to demonstrate understanding of coding practices, structure, and functionality according to the given requirements.
