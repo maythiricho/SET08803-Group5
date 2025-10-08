@@ -95,4 +95,3 @@ By contributing to this coursework project, each team member confirms that they 
 
 ---
 
-**Adapted from:** [Contributor Covenant](https://www.contributor-covenant.org) and tailored for academic Scrum teamwork at Edinburgh Napier University.
