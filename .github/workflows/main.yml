@@ -1,12 +1,11 @@
-name: A workflow for my Hello World App
+name: A workflow for my World Database App
 
 on:
   push:
-  pull_request:
 
 jobs:
   build:
-    name: Hello world action
+    name: World Database action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
