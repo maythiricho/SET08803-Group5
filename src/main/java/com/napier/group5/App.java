@@ -174,6 +174,17 @@ public class App {
                 System.out.println("Capital City Reports");
                 System.out.println("======================");
 
+                // 17
+                runQuery(con, "17. All capital cities",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        ORDER BY ci.Population DESC
+                        """,
+                        "Name","Country","Population");
+
+
                 // 18
                 runQuery(con, "18. Capitals by continent (Asia)",
                         """
