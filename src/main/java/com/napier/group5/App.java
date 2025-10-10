@@ -171,30 +171,27 @@ public class App {
                 System.out.println("✅ Connected!");
 
                 System.out.println("\n======================");
-                System.out.println("Capital City Reports");
+                System.out.println("Population Distribution and Population by Location");
                 System.out.println("======================");
 
-                // 18
-                runQuery(con, "18. Capitals by continent (Asia)",
+                // 23
+                runQuery(con, "23. Population Report (Continent)",
                         """
-                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
-                        FROM city ci
-                        INNER JOIN country co ON ci.ID = co.Capital
-                        WHERE co.Continent = 'Asia'
-                        ORDER BY ci.Population DESC
+                        SELECT
+                            co.Continent AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Continent
+                        ORDER BY `Total Population` DESC
                         """,
-                        "Name","Country","Population");
-
-                // 19
-                runQuery(con, "19. Capitals by region (Eastern Asia)",
-                        """
-                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
-                        FROM city ci
-                        INNER JOIN country co ON ci.ID = co.Capital
-                        WHERE co.Region = 'Eastern Asia'
-                        ORDER BY ci.Population DESC
-                        """,
-                        "Name","Country","Population");
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
             }
 
