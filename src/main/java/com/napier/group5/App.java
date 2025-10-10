@@ -193,6 +193,25 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
+                // 24
+                runQuery(con, "24. Population Report (Region)",
+                        """
+                        SELECT
+                            co.Region AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Region
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
             }
 
         } catch (Exception e) {
