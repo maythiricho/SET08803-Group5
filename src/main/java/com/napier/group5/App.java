@@ -185,6 +185,27 @@ public class App {
                         ORDER BY Population DESC
                         """,
                         "Name","Country","District","Population");
+                // 8
+                runQuery(con, "8. Cities by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Continent = 'Africa'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
+                // 9
+                runQuery(con, "9. Cities by region (Central Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Region = 'Central Africa'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
 
                 // 10
                 runQuery(con, "10. Cities by country (Argentina)",
@@ -196,7 +217,6 @@ public class App {
                         ORDER BY Population DESC
                         """,
                         "Name","Country","District","Population");
-
 
                 // 11
                 runQuery(con, "11. Cities by district (Limburg)",
