@@ -205,31 +205,6 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
-
-
-                System.out.println("\n======================");
-                System.out.println("City Reports");
-                System.out.println("======================");
-
-
-
-                System.out.println("\n======================");
-                System.out.println("Capital City Reports");
-                System.out.println("======================");
-
-
-
-                System.out.println("\n=================================================");
-                System.out.println("Population Distribution and Population by Location");
-                System.out.println("==================================================");
-
-
-
-                System.out.println("\n======================");
-                System.out.println("Language Reports");
-                System.out.println("======================");
-
-
             }
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
