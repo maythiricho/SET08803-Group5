@@ -1,0 +1,68 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam usecase {
+  BorderColor #777
+  BackgroundColor #F9F9F9
+}
+skinparam note {
+  BackgroundColor #FFFBEA
+  BorderColor #C9B458
+}
+skinparam defaultFontSize 12
+
+actor User
+
+rectangle "Population Reporting System" as PRS {
+  ' High-level menus (simple and clear)
+  usecase "<<menu>>\nCountry Reports" as VCR
+  usecase "<<menu>>\nCity Reports" as VCiR
+  usecase "<<menu>>\nCapital City Reports" as VCCR
+  usecase "<<menu>>\nPopulation Distribution" as VPDR
+  usecase "<<menu>>\nPopulation by Location" as VPBL
+  usecase "<<menu>>\nLanguage Reports" as VLR
+
+  User --> VCR
+  User --> VCiR
+  User --> VCCR
+  User --> VPDR
+  User --> VPBL
+  User --> VLR
+
+  ' Small notes with UC ranges (no crowded details)
+  note right of VCR
+    UC1–UC6
+    • All countries / by continent / region
+    • Top N (world/continent/region)
+  end note
+
+  note right of VCiR
+    UC7–UC16
+    • All cities / by continent / region / country / district
+    • Top N variants
+  end note
+
+  note right of VCCR
+    UC17–UC22
+    • All capital cities / by continent / region
+    • Top N variants
+  end note
+
+  note right of VPDR
+    UC23–UC25
+    • Distribution by continent / region / country
+  end note
+
+  note right of VPBL
+    UC26–UC31
+    • Totals for world / continent / region
+    • country / district / city
+  end note
+
+  note right of VLR
+    UC32
+    • Top languages with speakers & % of world
+  end note
+}
+@enduml
