@@ -204,6 +204,17 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
+                // 19
+                runQuery(con, "19. Capitals by region (Eastern Asia)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Region = 'Eastern Asia'
+                        ORDER BY ci.Population DESC
+                        """,
+                        "Name","Country","Population");
+
             }
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
