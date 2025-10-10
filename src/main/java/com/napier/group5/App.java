@@ -170,42 +170,23 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
-                // ----------------- section titles + the 32 reports -----------------
-
                 System.out.println("\n======================");
-                System.out.println("Country Reports");
+                System.out.println("Capital City Reports");
                 System.out.println("======================");
 
-                // 1
-                runQuery(con, "1. All Countries by Population (World)",
+                // 18
+                runQuery(con, "18. Capitals by continent (Asia)",
                         """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        ORDER BY Population DESC
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Continent = 'Asia'
+                        ORDER BY ci.Population DESC
                         """,
-                        "Code","Name","Continent","Region","Population","Capital");
-
-                // 2
-                runQuery(con, "2. Countries by Population (Continent = Asia)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Continent = 'Asia'
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
-
-                // 3
-                runQuery(con, "3. Countries by Population (Region = Caribbean)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Region = 'Caribbean'
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
+                        "Name","Country","Population");
 
             }
+
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
             e.printStackTrace();
