@@ -170,7 +170,6 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
-                // ----------------- section titles + the 32 reports -----------------
 
                 System.out.println("\n======================");
                 System.out.println("Country Reports");
