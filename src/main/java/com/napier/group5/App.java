@@ -176,6 +176,15 @@ public class App {
                 System.out.println("City Reports");
                 System.out.println("======================");
 
+                // 7
+                runQuery(con, "7. All cities in world",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
 
                 // 10
                 runQuery(con, "10. Cities by country (Argentina)",
