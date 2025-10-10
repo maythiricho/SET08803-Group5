@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: devopsdb
+    build:
+      context: ./db
+    image: devops-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: world
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pexample"]
+      interval: 10s
+      retries: 5
+    networks:
+      - devopsnet
+
+  app:
+    container_name: devopsapp
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: devops-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: world
+      DB_USER: app
+      DB_PASSWORD: app123
+    # keep app running + define healthcheck
+    command: [ "sh", "-c", "java -jar /app/app.jar && tail -f /dev/null" ]
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'java .*app.jar' >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - devopsnet
+
+networks:
+  devopsnet:
+    driver: bridge
