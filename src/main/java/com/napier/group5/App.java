@@ -212,6 +212,66 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
+                // 29
+                runQuery(con, "29. Country population (Spain)",
+                        """
+                        SELECT
+                            co.Name AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        WHERE co.Name = 'Spain'
+                        GROUP BY co.Name
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 30
+                runQuery(con, "30. District population (Limburg)",
+                        """
+                        SELECT
+                            ci.District AS District,
+                            SUM(ci.City_Pop) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        INNER JOIN (
+                            SELECT CountryCode, District, SUM(Population) AS City_Pop
+                            FROM city
+                            WHERE District = 'Limburg'
+                            GROUP BY CountryCode, District
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY ci.District
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "District","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 31
+                runQuery(con, "31. City population (London)",
+                        """
+                        SELECT
+                            ci.Name AS city_name,
+                            SUM(ci.City_Pop) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        INNER JOIN (
+                            SELECT CountryCode, Name, SUM(Population) AS City_Pop
+                            FROM city
+                            WHERE Name = 'London'
+                            GROUP BY CountryCode, Name
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY ci.Name
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "city_name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
             }
 
         } catch (Exception e) {
