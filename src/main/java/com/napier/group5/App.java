@@ -170,39 +170,31 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
-
                 System.out.println("\n======================");
-                System.out.println("Country Reports");
+                System.out.println("Capital City Reports");
                 System.out.println("======================");
 
-                // 1
-                runQuery(con, "1. All Countries by Population (World)",
+                // 17
+                runQuery(con, "17. All capital cities",
                         """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        ORDER BY Population DESC
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        ORDER BY ci.Population DESC
                         """,
-                        "Code","Name","Continent","Region","Population","Capital");
+                        "Name","Country","Population");
 
-                // 2
-                runQuery(con, "2. Countries by Population (Continent = Asia)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Continent = 'Asia'
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
 
-                // 3
-                runQuery(con, "3. Countries by Population (Region = Caribbean)",
+                // 18
+                runQuery(con, "18. Capitals by continent (Asia)",
                         """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Region = 'Caribbean'
-                        ORDER BY Population DESC
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Continent = 'Asia'
+                        ORDER BY ci.Population DESC
                         """,
-                        "Code","Name","Continent","Region","Population","Capital");
+                        "Name","Country","Population");
 
                 // 19
                 runQuery(con, "19. Capitals by region (Eastern Asia)",
@@ -216,6 +208,7 @@ public class App {
                         "Name","Country","Population");
 
             }
+
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
             e.printStackTrace();
