@@ -1,4 +1,4 @@
-FROM openjdk:latest
-COPY ./target/classes/com /tmp/com
+FROM openjdk:18
+COPY target/Assessmentforgp5-1.0.0-SNAPSHOT.jar /tmp
 WORKDIR /tmp
-ENTRYPOINT ["java", "com.napier.group5.App"]
+ENTRYPOINT ["java", "-jar", "Assessmentforgp5-1.0.0-SNAPSHOT.jar"]
