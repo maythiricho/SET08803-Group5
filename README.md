@@ -87,4 +87,4 @@ If you have questions regarding this coursework:
 
 - **Module:** SET08803 - Software Engineering Methods
 - **Institution:** Edinburgh Napier University
-- **GitHub Repo:** [maythiricho/SET08803-Group5](https://github.com/maythiricho/SET08803-Group5)mvn -q -DskipTests package
+- **GitHub Repo:** [maythiricho/SET08803-Group5](https://github.com/maythiricho/SET08803-Group5)
