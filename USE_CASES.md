@@ -1,528 +1,257 @@
 # Use Cases for Population Reporting System
 
+This document describes all the use cases for the **Population Reporting System**.  
+The system allows users to generate various population-based reports using data from the **World Database**.  
+Each use case corresponds to one of the menu categories shown in the **Use Case Diagram** — including *Country Reports*, *City Reports*, *Capital City Reports*, *Population Distribution*, *Population by Location*, and *Language Reports*.
+
 ---
 
-## Use Case 1: View All Countries by Population
-**Actor:** User  
-**Description:** User wants to see a list of all countries sorted from largest to smallest population.  
-**Precondition:** Database connection is established.
+##  Country Reports (UC1–UC6)
 
+### Use Case 1: View All Countries by Population
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to see all countries sorted by population (descending).  
 **Flow:**
 1. User selects “All Countries” report.
-2. System queries the Country table in the database.
-3. System sorts results by population (descending).
+2. System queries the Country table.
+3. System sorts results by population.
 4. System displays results.
 
 **Acceptance Criteria:**
-- List of countries is complete.
-- Countries are correctly sorted by population.
+- All countries are listed.
+- Countries are sorted correctly by population.
 
 ---
 
-## Use Case 2: View Countries by Continent
+### Use Case 2: View Countries by Continent
 **Actor:** User  
-**Description:** User wants to see countries in a specific continent sorted by population.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to view countries in a selected continent sorted by population.  
 **Flow:**
-1. User selects “Countries by Continent” report.
-2. System prompts user to select a continent.
-3. System queries the database for countries in that continent.
-4. System sorts results by population (descending).
-5. System displays results.
+1. User selects a continent.
+2. System queries countries in that continent.
+3. System sorts and displays results.
 
 **Acceptance Criteria:**
-- Only countries in the selected continent are displayed.
-- Countries are sorted correctly.
+- Only countries in the selected continent are shown.
+- Sorting is correct.
 
 ---
 
-## Use Case 3: View Countries by Region
+### Use Case 3: View Countries by Region
 **Actor:** User  
-**Description:** User wants to see countries in a specific region sorted by population.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to view countries in a selected region sorted by population.  
 **Flow:**
-1. User selects “Countries by Region” report.
-2. System prompts user to select a region.
-3. System queries the database for countries in that region.
-4. System sorts results by population (descending).
-5. System displays results.
+1. User selects a region.
+2. System queries countries in that region.
+3. System sorts and displays results.
 
 **Acceptance Criteria:**
-- Only countries in the selected region are displayed.
-- Countries are sorted correctly.
+- Only countries in the selected region are shown.
+- Sorting is correct.
 
 ---
 
-## Use Case 4: Top N Countries Globally
+### Use Case 4: Top N Countries Globally
 **Actor:** User  
-**Description:** User wants to see the top N most populated countries worldwide.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to see the top N most populated countries in the world.  
 **Flow:**
 1. User inputs number N.
-2. System queries the database.
-3. System sorts results by population (descending) and returns top N countries.
-4. System displays results.
+2. System queries and sorts data.
+3. System displays the top N countries.
 
 **Acceptance Criteria:**
-- Only top N countries are displayed correctly.
+- Only N results are shown.
+- Order is correct.
 
 ---
 
-## Use Case 5: Top N Countries by Continent
+### Use Case 5: Top N Countries by Continent
 **Actor:** User  
-**Description:** User wants to see the top N most populated countries in a specific continent.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to see the top N most populated countries within a continent.  
 **Flow:**
 1. User selects a continent and inputs N.
-2. System queries the database for that continent.
-3. System sorts results by population and returns top N.
-4. System displays results.
+2. System queries filtered data.
+3. System displays top N results.
 
 **Acceptance Criteria:**
-- Only top N countries for the selected continent are displayed correctly.
+- Only top N countries from the selected continent are shown.
 
 ---
 
-## Use Case 6: Top N Countries by Region
+### Use Case 6: Top N Countries by Region
 **Actor:** User  
-**Description:** User wants to see the top N most populated countries in a specific region.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects a region and inputs N.
-2. System queries the database for that region.
-3. System sorts results by population and returns top N.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Only top N countries for the selected region are displayed correctly.
-
----
-
-## Use Case 7: View All Cities by Population
-**Actor:** User  
-**Description:** User wants to see all cities in the world sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “All Cities” report.
-2. System queries the City table.
-3. System sorts results by population (descending).
-4. System displays results.
-
-**Acceptance Criteria:**
-- All cities are displayed.
-- Cities are sorted correctly by population.
-
----
-
-## Use Case 8: View Cities by Continent
-**Actor:** User  
-**Description:** User wants to see cities in a specific continent sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Cities by Continent” report.
-2. System prompts user for a continent.
-3. System queries the City table filtered by continent.
-4. System sorts results by population (descending).
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only cities in the selected continent are displayed.
-- Cities are sorted correctly.
-
----
-
-## Use Case 9: View Cities by Region
-**Actor:** User  
-**Description:** User wants to see cities in a specific region sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Cities by Region” report.
-2. System prompts user for a region.
-3. System queries the City table filtered by region.
-4. System sorts results by population.
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only cities in the selected region are displayed.
-- Cities are sorted correctly.
-
----
-
-## Use Case 10: View Cities by Country
-**Actor:** User  
-**Description:** User wants to see cities in a specific country sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Cities by Country” report.
-2. System prompts user for a country.
-3. System queries the City table filtered by country.
-4. System sorts results by population.
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only cities in the selected country are displayed.
-- Cities are sorted correctly.
-
----
-
-## Use Case 11: View Cities by District
-**Actor:** User  
-**Description:** User wants to see cities in a specific district sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Cities by District” report.
-2. System prompts user for a district.
-3. System queries the City table filtered by district.
-4. System sorts results by population.
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only cities in the selected district are displayed.
-- Cities are sorted correctly.
-
----
-
-## Use Case 12: Top N Cities Globally
-**Actor:** User  
-**Description:** User wants to see the top N most populated cities in the world.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User inputs number N.
-2. System queries the database.
-3. System sorts results by population (descending) and returns top N.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Only top N cities are displayed correctly.
-
----
-
-## Use Case 13: Top N Cities by Continent
-**Actor:** User  
-**Description:** User wants to see the top N cities in a continent.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects continent and inputs N.
-2. System queries database filtered by continent.
-3. System sorts and returns top N.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Top N cities in the continent are displayed correctly.
-
----
-
-## Use Case 14: Top N Cities by Region
-**Actor:** User  
-**Description:** User wants to see the top N cities in a region.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to see top N most populated countries in a region.  
 **Flow:**
 1. User selects region and inputs N.
-2. System queries database filtered by region.
-3. System sorts and returns top N.
+2. System queries data.
+3. System displays sorted top N results.
+
+**Acceptance Criteria:**
+- Only top N countries in the region are shown.
+
+---
+
+##  City Reports (UC7–UC16)
+
+### Use Case 7: View All Cities by Population
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to see all cities sorted by population.  
+**Flow:**
+1. User selects “All Cities” report.
+2. System queries City table.
+3. System sorts and displays results.
+
+**Acceptance Criteria:**
+- All cities are listed and sorted correctly.
+
+---
+
+### Use Case 8–11: Cities by Continent / Region / Country / District
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to view cities filtered by continent, region, country, or district.  
+**Flow:**
+1. User selects location type (continent, region, etc.).
+2. System queries filtered data.
+3. System sorts results.
 4. System displays results.
 
 **Acceptance Criteria:**
-- Top N cities in the region are displayed correctly.
+- Only cities from the selected area are displayed.
+- Sorting is correct.
 
 ---
 
-## Use Case 15: Top N Cities by Country
+### Use Case 12–16: Top N Cities (Global / Continent / Region / Country / District)
 **Actor:** User  
-**Description:** User wants to see the top N cities in a country.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to view the top N most populated cities globally or within a chosen location.  
 **Flow:**
-1. User selects country and inputs N.
-2. System queries database filtered by country.
-3. System sorts and returns top N.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Top N cities in the country are displayed correctly.
-
----
-
-## Use Case 16: Top N Cities by District
-**Actor:** User  
-**Description:** User wants to see the top N cities in a district.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects district and inputs N.
-2. System queries database filtered by district.
-3. System sorts and returns top N.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Top N cities in the district are displayed correctly.
-
----
-
-## Use Case 17: View All Capital Cities
-**Actor:** User  
-**Description:** User wants to see all capital cities sorted by population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “All Capital Cities” report.
-2. System queries CapitalCity table.
-3. System sorts results by population (descending).
-4. System displays results.
-
-**Acceptance Criteria:**
-- All capitals are displayed.
-- Capitals are sorted correctly.
-
----
-
-## Use Case 18: View Capital Cities by Continent
-**Actor:** User  
-**Description:** User wants to see capital cities in a specific continent.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Capital Cities by Continent” report.
-2. System prompts for continent.
-3. System queries CapitalCity table filtered by continent.
-4. System sorts results.
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only capitals in the continent are displayed.
-- Capitals sorted correctly.
-
----
-
-## Use Case 19: View Capital Cities by Region
-**Actor:** User  
-**Description:** User wants to see capital cities in a specific region.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Capital Cities by Region” report.
-2. System prompts for region.
-3. System queries CapitalCity table filtered by region.
-4. System sorts results.
-5. System displays results.
-
-**Acceptance Criteria:**
-- Only capitals in the region are displayed.
-- Capitals sorted correctly.
-
----
-
-## Use Case 20: Top N Capital Cities Globally
-**Actor:** User  
-**Description:** User wants to see top N most populated capital cities worldwide.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User inputs number N.
+1. User inputs N and selects filter (optional).
 2. System queries database.
 3. System sorts by population and returns top N.
-4. System displays results.
+
+**Acceptance Criteria:**
+- Top N cities are displayed correctly.
+
+---
+
+## Capital City Reports (UC17–UC22)
+
+### Use Case 17–19: View Capital Cities (All / by Continent / by Region)
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to view capital cities globally or filtered by continent or region.  
+**Flow:**
+1. User selects the report type.
+2. System queries and filters capital city data.
+3. System sorts results.
+4. System displays list.
+
+**Acceptance Criteria:**
+- Correct capitals shown.
+- Sorted by population (descending).
+
+---
+
+### Use Case 20–22: Top N Capital Cities (Global / Continent / Region)
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to see the top N most populated capital cities globally or within a selected area.  
+**Flow:**
+1. User inputs N and selects filter.
+2. System queries and sorts capital cities.
+3. System displays top N.
 
 **Acceptance Criteria:**
 - Top N capitals are displayed correctly.
 
 ---
 
-## Use Case 21: Top N Capital Cities by Continent
-**Actor:** User  
-**Description:** User wants to see top N capitals in a continent.  
-**Precondition:** Database connection is established.
+##  Population Distribution Reports (UC23–UC25)
 
+### Use Case 23: Population Distribution by Continent
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants population totals and percentages for each continent.  
 **Flow:**
-1. User selects continent and inputs N.
-2. System queries filtered database.
-3. System sorts and returns top N.
+1. User selects “Population by Continent.”
+2. System queries continent-level data.
+3. System calculates totals, in-city, and non-city values.
 4. System displays results.
 
 **Acceptance Criteria:**
-- Top N capitals in the continent displayed correctly.
+- Data is accurate and includes correct percentages.
 
 ---
 
-## Use Case 22: Top N Capital Cities by Region
+### Use Case 24: Population Distribution by Region
 **Actor:** User  
-**Description:** User wants to see top N capitals in a region.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants population distribution by region.  
 **Flow:**
-1. User selects region and inputs N.
-2. System queries filtered database.
-3. System sorts and returns top N.
-4. System displays results.
+1. User selects “Population by Region.”
+2. System queries and calculates totals and percentages.
+3. System displays data.
 
 **Acceptance Criteria:**
-- Top N capitals in the region displayed correctly.
+- Values and percentages are correct.
 
 ---
 
-## Use Case 23: Population Report by Continent
+### Use Case 25: Population Distribution by Country
 **Actor:** User  
-**Description:** User wants population distribution for each continent.  
-**Precondition:** Database connection is established.
-
+**Precondition:** Database connection is established.  
+**Description:** User wants to see total and city vs. non-city population by country.  
 **Flow:**
-1. User selects “Population Report by Continent.”
-2. System queries population data for continent.
-3. System calculates total, in cities, not in cities, and percentages.
-4. System displays results.
+1. User selects “Population by Country.”
+2. System queries and calculates.
+3. System displays results.
 
 **Acceptance Criteria:**
-- Correct total population, city population, and non-city population.
+- Data is complete and correct.
+
+---
+
+## Population by Location (UC26–UC31)
+
+### Use Case 26–31: View Population Total (World / Continent / Region / Country / District / City)
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to view total population for a chosen area (global or specific location).  
+**Flow:**
+1. User selects report type and location.
+2. System queries database for total population.
+3. System displays the result.
+
+**Acceptance Criteria:**
+- Population totals match database records.
+
+---
+
+## Language Reports (UC32)
+
+### Use Case 32: Language Report (Top 5 Languages)
+**Actor:** User  
+**Precondition:** Database connection is established.  
+**Description:** User wants to view the population of speakers for Chinese, English, Hindi, Spanish, and Arabic, including percentage of the world population.  
+**Flow:**
+1. User selects “Language Report.”
+2. System queries language data.
+3. System calculates speaker counts and percentages.
+4. System sorts and displays results.
+
+**Acceptance Criteria:**
+- Languages are sorted by total speakers.
 - Percentages are accurate.
 
 ---
 
-## Use Case 24: Population Report by Region
-**Actor:** User  
-**Description:** User wants population distribution for each region.  
-**Precondition:** Database connection is established.
 
-**Flow:**
-1. User selects “Population Report by Region.”
-2. System queries population data for region.
-3. System calculates totals and percentages.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Correct totals and percentages.
-
----
-
-## Use Case 25: Population Report by Country
-**Actor:** User  
-**Description:** User wants population distribution for each country.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Population Report by Country.”
-2. System queries population data for country.
-3. System calculates totals and percentages.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Correct totals and percentages.
-
----
-
-## Use Case 26: View World Population
-**Actor:** User  
-**Description:** User wants to see the total population of the world.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “World Population.”
-2. System queries database for total population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- World population is correct.
-
----
-
-## Use Case 27: View Population by Continent
-**Actor:** User  
-**Description:** User wants to see population of a specific continent.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects continent.
-2. System queries database for total population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- Population matches database.
-
----
-
-## Use Case 28: View Population by Region
-**Actor:** User  
-**Description:** User wants to see population of a specific region.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects region.
-2. System queries database for total population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- Population matches database.
-
----
-
-## Use Case 29: View Population by Country
-**Actor:** User  
-**Description:** User wants to see population of a specific country.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects country.
-2. System queries database for total population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- Population matches database.
-
----
-
-## Use Case 30: View Population by District
-**Actor:** User  
-**Description:** User wants to see population of a specific district.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects district.
-2. System queries database for population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- Population matches database.
-
----
-
-## Use Case 31: View Population by City
-**Actor:** User  
-**Description:** User wants to see population of a specific city.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects city.
-2. System queries database for population.
-3. System displays result.
-
-**Acceptance Criteria:**
-- Population matches database.
-
----
-
-## Use Case 32: Language Population Reports
-**Actor:** User  
-**Description:** User wants the number of people speaking Chinese, English, Hindi, Spanish, Arabic with % of world population.  
-**Precondition:** Database connection is established.
-
-**Flow:**
-1. User selects “Language Report.”
-2. System queries database for language speakers.
-3. System calculates percentage of world population.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Numbers and percentages are correct.
-- Languages sorted from largest to smallest speakers.
