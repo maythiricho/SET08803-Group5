@@ -77,7 +77,7 @@ This project is licensed under the MIT License.
 ---
 
 ## Version
-Current Release: v1.0.0-alpha  
+Current Release: v0.1.0.2-alpha  
 [View all releases](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
