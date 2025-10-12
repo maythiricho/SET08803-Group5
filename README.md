@@ -45,7 +45,7 @@ The **Population Information Reporting System** allows users to:
 [![Releases](https://img.shields.io/github/release/maythiricho/SET08803-Group5/all.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
-## Scrum & Collaboration 
+## Scrum & Collaboration
 This project follows Scrum methodology:
 - Managed via Zube.io integrated with GitHub.
 - Work is divided into Sprints and User Stories.
@@ -70,19 +70,19 @@ You can view the full [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ---
 
-## License 
+## License
 This project is licensed under the MIT License.  
 [View License](./LICENSE)
 
 ---
 
-## Version 
+## Version
 Current Release: v1.0.0-alpha  
 [View all releases](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
 
-## Contact 
+## Contact
 If you have questions regarding this coursework:
 
 - **Module:** SET08803 - Software Engineering Methods
