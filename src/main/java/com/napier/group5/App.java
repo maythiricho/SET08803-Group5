@@ -170,64 +170,27 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
-                // ----------------- section titles + the 32 reports -----------------
-
-                System.out.println("\n======================");
-                System.out.println("Country Reports");
-                System.out.println("======================");
-
-                // 1
-                runQuery(con, "1. All Countries by Population (World)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
-
-                // 2
-                runQuery(con, "2. Countries by Population (Continent = Asia)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Continent = 'Asia'
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
-
-                // 3
-                runQuery(con, "3. Countries by Population (Region = Caribbean)",
-                        """
-                        SELECT Code, Name, Continent, Region, Population, Capital
-                        FROM country
-                        WHERE Region = 'Caribbean'
-                        ORDER BY Population DESC
-                        """,
-                        "Code","Name","Continent","Region","Population","Capital");
-
-
-
-                System.out.println("\n======================");
-                System.out.println("City Reports");
-                System.out.println("======================");
-
-
-
-                System.out.println("\n======================");
-                System.out.println("Capital City Reports");
-                System.out.println("======================");
-
-
-
-                System.out.println("\n=================================================");
-                System.out.println("Population Distribution and Population by Location");
-                System.out.println("==================================================");
-
-
-
                 System.out.println("\n======================");
                 System.out.println("Language Reports");
                 System.out.println("======================");
+
+                // 32
+                runQuery(con, "32. Population by language (Chinese, English, Hindi, Spanish, Arabic)",
+                        """
+                        SELECT
+                            cl.Language AS Language,
+                            ROUND(SUM(c.Population * cl.Percentage / 100)) AS Num_of_people,
+                            ROUND(
+                                (SUM(c.Population * cl.Percentage / 100) /
+                                 (SELECT SUM(Population) FROM country) * 100), 2
+                            ) AS Percent_of_world
+                        FROM countrylanguage cl
+                        JOIN country c ON cl.CountryCode = c.Code
+                        WHERE cl.Language IN ('Chinese','English','Hindi','Spanish','Arabic')
+                        GROUP BY cl.Language
+                        ORDER BY Num_of_people DESC
+                        """,
+                        "Language","Num_of_people","Percent_of_world");
 
 
             }
