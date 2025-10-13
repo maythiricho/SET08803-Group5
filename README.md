@@ -56,11 +56,11 @@ This project follows Scrum methodology:
 
 ## Team Roles
 
-| Role | Member                                                                                                                                                             | Responsibilities |
-|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
-| Product Owner | *[May Thiri Cho](https://github.com/maythiricho)*                                                                                                                  | Defines backlog, ensures requirements meet goals |
-| Scrum Master | *[Phyo Zaw Aung](https://github.com/phyozawaung005)*                                                                                                               | Facilitates Scrum meetings and team workflow |
-| Developers/Testers | *[Kyaw Zayar Min](https://github.com/KyawZayarMin1234)*, *[Phyo Thura Kyaw](https://github.com/Segma-tech)*, *[Htet Arkar Saw Naung](https://github.com/Rayyy990)* | Implement, test, and document features |
+| Role | Member                                                                                                                                                                                                                   | Responsibilities |
+|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
+| Product Owner | *[May Thiri Cho](https://github.com/maythiricho)*                                                                                                                                                                        | Defines backlog, ensures requirements meet goals |
+| Scrum Master | *[Phyo Zaw Aung](https://github.com/phyozawaung005)*                                                                                                                                                                     | Facilitates Scrum meetings and team workflow |
+| Developers/Testers | *[Kyaw Zayar Min](https://github.com/KyawZayarMin1234)*, *[Phyo Thura Kyaw](https://github.com/Segma-tech)*, *[Htet Arkar Saw Naung](https://github.com/Rayyy990)*, *[Hein Htet Lin](https://github.com/heinhtetlin810)* | Implement, test, and document features |
 
 ---
 
