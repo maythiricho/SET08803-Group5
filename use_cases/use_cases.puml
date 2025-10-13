@@ -12,23 +12,25 @@ skinparam note {
 }
 skinparam defaultFontSize 12
 
-actor User
+actor "Data Analyst"
+/'Actor can be Data Analyst or Researcher '/
+
 
 rectangle "Population Reporting System" as PRS {
   ' High-level menus (simple and clear)
-  usecase "<<menu>>\nCountry Reports" as VCR
-  usecase "<<menu>>\nCity Reports" as VCiR
-  usecase "<<menu>>\nCapital City Reports" as VCCR
-  usecase "<<menu>>\nPopulation Distribution" as VPDR
-  usecase "<<menu>>\nPopulation by Location" as VPBL
-  usecase "<<menu>>\nLanguage Reports" as VLR
+  usecase "Country Reports" as VCR
+  usecase "City Reports" as VCiR
+  usecase "Capital City Reports" as VCCR
+  usecase "Population Distribution" as VPDR
+  usecase "Population by Location" as VPBL
+  usecase "Language Reports" as VLR
 
-  User --> VCR
-  User --> VCiR
-  User --> VCCR
-  User --> VPDR
-  User --> VPBL
-  User --> VLR
+  "Data Analyst" --> VCR
+  "Data Analyst" --> VCiR
+  "Data Analyst" --> VCCR
+  "Data Analyst" --> VPDR
+  "Data Analyst" --> VPBL
+  "Data Analyst" --> VLR
 
   ' Small notes with UC ranges (no crowded details)
   note right of VCR
