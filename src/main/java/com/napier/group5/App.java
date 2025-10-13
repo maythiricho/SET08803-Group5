@@ -212,6 +212,29 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
+                // 25
+                runQuery(con, "25. Population Report (Country)",
+                        """
+                        SELECT
+                            co.Name AS Country,
+                            co.Population AS `Total Population`,
+                            ROUND(SUM(ci.Population) / co.Population * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.Population) / co.Population) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN city ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Code, co.Name, co.Population
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Country","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 26
+                runQuery(con, "26. World population",
+                        """
+                        SELECT SUM(Population) AS total_world_population
+                        FROM country
+                        """,
+                        "total_world_population");
+
                 // 29
                 runQuery(con, "29. Country population (Spain)",
                         """
