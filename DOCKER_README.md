@@ -215,5 +215,5 @@ If you modify SQL or Java files frequently:
 ---
 
  *Author: Group 5 — Napier DevOps Assessment*  
- *Version: 1.0 (October 2025)*  
+ *Version: 0.1.0.2 (October 2025)*  
  *"Build. Connect. Report."*
