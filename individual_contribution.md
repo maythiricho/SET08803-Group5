@@ -9,7 +9,7 @@
 | **40794373**         | **Developer 3 (Implement data model and service model, deployment configuration and testing, SQL code)** | **15%** | Developed data/service models and managed deployment testing. Strong technical tasks but similar scope to other developers. |
 | **40794503**         | **Developer 4 (Generate formatted reports, integration tests for report, JUnit tests, SQL code)** | **15%** | Worked mainly on testing and reporting, ensuring quality assurance. Equally significant to team delivery, especially in testing and report validation. |
 
-| **Total** |  | **100%** |  |
+| **Total**  **100%** |
 
 ---
 
