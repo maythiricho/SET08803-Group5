@@ -67,7 +67,7 @@ User selects a population report type or sorting/filtering option in the system 
 ---
 
 ### SCHEDULE
-**Due Date:** Version v0.1.0.2
+**Due Date:** Version v0.1.0.2  
 
 ---
 
