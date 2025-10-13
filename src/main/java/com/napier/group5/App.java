@@ -168,7 +168,102 @@ public class App {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
-                System.out.println("✅ Connected!");
+                System.out.println(" Connected!");
+
+                // ----------------- section titles + the 21 reports -----------------
+
+                System.out.println("\n======================");
+                System.out.println("Country Reports");
+                System.out.println("======================");
+
+                // 1
+                runQuery(con, "1. All Countries by Population (World)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 2
+                runQuery(con, "2. Countries by Population (Continent = Asia)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Continent = 'Asia'
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 3
+                runQuery(con, "3. Countries by Population (Region = Caribbean)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Region = 'Caribbean'
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+
+                System.out.println("\n======================");
+                System.out.println("City Reports");
+                System.out.println("======================");
+
+                // 7
+                runQuery(con, "7. All cities in world",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
+                // 8
+                runQuery(con, "8. Cities by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Continent = 'Africa'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
+                // 9
+                runQuery(con, "9. Cities by region (Central Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Region = 'Central Africa'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
+                // 10
+                runQuery(con, "10. Cities by country (Argentina)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Name = 'Argentina'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
+                // 11
+                runQuery(con, "11. Cities by district (Limburg)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE ci.District = 'Limburg'
+                        ORDER BY Population DESC
+                        """,
+                        "Name","Country","District","Population");
+
 
                 System.out.println("\n======================");
                 System.out.println("Capital City Reports");
@@ -183,7 +278,6 @@ public class App {
                         ORDER BY ci.Population DESC
                         """,
                         "Name","Country","Population");
-
 
                 // 18
                 runQuery(con, "18. Capitals by continent (Asia)",
@@ -207,8 +301,194 @@ public class App {
                         """,
                         "Name","Country","Population");
 
-            }
 
+                System.out.println("\n======================");
+                System.out.println("Population Distribution and Population by Location");
+                System.out.println("======================");
+
+                // 23
+                runQuery(con, "23. Population Report (Continent)",
+                        """
+                        SELECT
+                            co.Continent AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Continent
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 24
+                runQuery(con, "24. Population Report (Region)",
+                        """
+                        SELECT
+                            co.Region AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Region
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 25
+                runQuery(con, "25. Population Report (Country)",
+                        """
+                        SELECT
+                            co.Name AS Country,
+                            co.Population AS `Total Population`,
+                            ROUND(SUM(ci.Population) / co.Population * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.Population) / co.Population) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN city ci ON co.Code = ci.CountryCode
+                        GROUP BY co.Code, co.Name, co.Population
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Country","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 26
+                runQuery(con, "26. World population",
+                        """
+                        SELECT SUM(Population) AS total_world_population
+                        FROM country
+                        """,
+                        "total_world_population");
+
+                // 27
+                runQuery(con, "27. Continent population (Africa)",
+                        """
+                        SELECT
+                            co.Continent AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        WHERE co.Continent = 'Africa'
+                        GROUP BY co.Continent
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 28
+                runQuery(con, "28. Region population (Central Africa)",
+                        """
+                        SELECT
+                            co.Region AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        WHERE co.Region = 'Central Africa'
+                        GROUP BY co.Region
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 29
+                runQuery(con, "29. Country population (Spain)",
+                        """
+                        SELECT
+                            co.Name AS Name,
+                            SUM(co.Population) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        LEFT JOIN (
+                            SELECT CountryCode, SUM(Population) AS City_Pop
+                            FROM city
+                            GROUP BY CountryCode
+                        ) ci ON co.Code = ci.CountryCode
+                        WHERE co.Name = 'Spain'
+                        GROUP BY co.Name
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 30
+                runQuery(con, "30. District population (Limburg)",
+                        """
+                        SELECT
+                            ci.District AS District,
+                            SUM(ci.City_Pop) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        INNER JOIN (
+                            SELECT CountryCode, District, SUM(Population) AS City_Pop
+                            FROM city
+                            WHERE District = 'Limburg'
+                            GROUP BY CountryCode, District
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY ci.District
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "District","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                // 31
+                runQuery(con, "31. City population (London)",
+                        """
+                        SELECT
+                            ci.Name AS city_name,
+                            SUM(ci.City_Pop) AS `Total Population`,
+                            ROUND(SUM(ci.City_Pop) / SUM(co.Population) * 100, 2) AS `Population in Cities (%)`,
+                            ROUND((1 - SUM(ci.City_Pop) / SUM(co.Population)) * 100, 2) AS `Population not in Cities (%)`
+                        FROM country co
+                        INNER JOIN (
+                            SELECT CountryCode, Name, SUM(Population) AS City_Pop
+                            FROM city
+                            WHERE Name = 'London'
+                            GROUP BY CountryCode, Name
+                        ) ci ON co.Code = ci.CountryCode
+                        GROUP BY ci.Name
+                        ORDER BY `Total Population` DESC
+                        """,
+                        "city_name","Total Population","Population in Cities (%)","Population not in Cities (%)");
+
+                System.out.println("\n======================");
+                System.out.println("Language Reports");
+                System.out.println("======================");
+
+                // 32
+                runQuery(con, "32. Population by language (Chinese, English, Hindi, Spanish, Arabic)",
+                        """
+                        SELECT
+                            cl.Language AS Language,
+                            ROUND(SUM(c.Population * cl.Percentage / 100)) AS Num_of_people,
+                            ROUND(
+                                (SUM(c.Population * cl.Percentage / 100) /
+                                 (SELECT SUM(Population) FROM country) * 100), 2
+                            ) AS Percent_of_world
+                        FROM countrylanguage cl
+                        JOIN country c ON cl.CountryCode = c.Code
+                        WHERE cl.Language IN ('Chinese','English','Hindi','Spanish','Arabic')
+                        GROUP BY cl.Language
+                        ORDER BY Num_of_people DESC
+                        """,
+                        "Language","Num_of_people","Percent_of_world");
+            }
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
             e.printStackTrace();
