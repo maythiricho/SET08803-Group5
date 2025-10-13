@@ -1,257 +1,348 @@
-# Use Cases for Population Reporting System
-
-This document describes all the use cases for the **Population Reporting System**.  
-The system allows users to generate various population-based reports using data from the **World Database**.  
-Each use case corresponds to one of the menu categories shown in the **Use Case Diagram** — including *Country Reports*, *City Reports*, *Capital City Reports*, *Population Distribution*, *Population by Location*, and *Language Reports*.
-
----
-
-##  Country Reports (UC1–UC6)
-
-### Use Case 1: View All Countries by Population
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see all countries sorted by population (descending).  
-**Flow:**
-1. User selects “All Countries” report.
-2. System queries the Country table.
-3. System sorts results by population.
-4. System displays results.
-
-**Acceptance Criteria:**
-- All countries are listed.
-- Countries are sorted correctly by population.
+# Population Reporting System
+**Version:** v0.1.0.2  
+**Document:** Use Case Specification  
+**Author:** Group 5
 
 ---
 
-### Use Case 2: View Countries by Continent
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view countries in a selected continent sorted by population.  
-**Flow:**
-1. User selects a continent.
-2. System queries countries in that continent.
-3. System sorts and displays results.
+##  Introduction
+This document describes the **primary use cases** for the *Population Reporting System (v0.1.0.2)* — a data-driven analytical application that enables users to explore, sort, and compare population information across global, continental, regional, and national levels.
 
-**Acceptance Criteria:**
-- Only countries in the selected continent are shown.
-- Sorting is correct.
+Each use case is presented with structured details such as preconditions, actors, triggers, main success scenarios, and possible extensions.  
+This specification serves as a foundation for design, testing, and deployment planning.
 
 ---
 
-### Use Case 3: View Countries by Region
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view countries in a selected region sorted by population.  
-**Flow:**
-1. User selects a region.
-2. System queries countries in that region.
-3. System sorts and displays results.
+## Country Reports
 
-**Acceptance Criteria:**
-- Only countries in the selected region are shown.
-- Sorting is correct.
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Allow users (data analysts and researchers) to view, sort, and compare country population data at global, continental, and regional levels.
 
----
+**Scope:**  
+Population Reporting System (Backend and Reporting Module)
 
-### Use Case 4: Top N Countries Globally
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see the top N most populated countries in the world.  
-**Flow:**
-1. User inputs number N.
-2. System queries and sorts data.
-3. System displays the top N countries.
+**Level:**  
+Primary Task
 
-**Acceptance Criteria:**
-- Only N results are shown.
-- Order is correct.
+**Preconditions:**
+- Population data is available in the database
+- User is authenticated (if required)
 
----
+**Success End Condition:**  
+User can view accurate, sorted, and filtered country population reports.
 
-### Use Case 5: Top N Countries by Continent
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see the top N most populated countries within a continent.  
-**Flow:**
-1. User selects a continent and inputs N.
-2. System queries filtered data.
-3. System displays top N results.
+**Failed End Condition:**  
+System fails to retrieve or sort population data; user receives an error message.
 
-**Acceptance Criteria:**
-- Only top N countries from the selected continent are shown.
+**Primary Actor:**  
+Data Analyst / Researcher
+
+**Trigger:**  
+User selects a population report type or sorting/filtering option in the system UI.
 
 ---
 
-### Use Case 6: Top N Countries by Region
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see top N most populated countries in a region.  
-**Flow:**
-1. User selects region and inputs N.
-2. System queries data.
-3. System displays sorted top N results.
-
-**Acceptance Criteria:**
-- Only top N countries in the region are shown.
+### MAIN SUCCESS SCENARIO
+1. User opens the reporting interface.
+2. User selects **“Country Reports.”**
+3. System displays available report filters (World / Continent / Region / Top N).
+4. User chooses criteria and provides N if applicable.
+5. System retrieves relevant population data.
+6. System sorts and presents the results in descending order by population.
+7. User views or exports the report.
 
 ---
 
-##  City Reports (UC7–UC16)
-
-### Use Case 7: View All Cities by Population
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see all cities sorted by population.  
-**Flow:**
-1. User selects “All Cities” report.
-2. System queries City table.
-3. System sorts and displays results.
-
-**Acceptance Criteria:**
-- All cities are listed and sorted correctly.
+### EXTENSIONS
+- **3a:** No data found → Display “No data available for selected criteria.”
+- **5a:** Database connection error → Display “Unable to retrieve data. Please try again.”
 
 ---
 
-### Use Case 8–11: Cities by Continent / Region / Country / District
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view cities filtered by continent, region, country, or district.  
-**Flow:**
-1. User selects location type (continent, region, etc.).
-2. System queries filtered data.
-3. System sorts results.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Only cities from the selected area are displayed.
-- Sorting is correct.
+### SUB-VARIATIONS
+- View all countries (World, Continent, Region)
+- View Top N most populated countries (Global or by area)
 
 ---
 
-### Use Case 12–16: Top N Cities (Global / Continent / Region / Country / District)
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view the top N most populated cities globally or within a chosen location.  
-**Flow:**
-1. User inputs N and selects filter (optional).
-2. System queries database.
-3. System sorts by population and returns top N.
-
-**Acceptance Criteria:**
-- Top N cities are displayed correctly.
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
 
 ---
 
-## Capital City Reports (UC17–UC22)
+##  City Reports
 
-### Use Case 17–19: View Capital Cities (All / by Continent / by Region)
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view capital cities globally or filtered by continent or region.  
-**Flow:**
-1. User selects the report type.
-2. System queries and filters capital city data.
-3. System sorts results.
-4. System displays list.
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Provide detailed city-level population reports across multiple geographic divisions.
 
-**Acceptance Criteria:**
-- Correct capitals shown.
-- Sorted by population (descending).
+**Scope:**  
+Population Reporting System
 
----
+**Level:**  
+Primary Task
 
-### Use Case 20–22: Top N Capital Cities (Global / Continent / Region)
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see the top N most populated capital cities globally or within a selected area.  
-**Flow:**
-1. User inputs N and selects filter.
-2. System queries and sorts capital cities.
-3. System displays top N.
+**Preconditions:**  
+City data exists and is linked to corresponding countries, regions, and districts.
 
-**Acceptance Criteria:**
-- Top N capitals are displayed correctly.
+**Success End Condition:**  
+User can view and compare cities by population across different levels.
+
+**Failed End Condition:**  
+Incomplete or missing data prevents proper reporting.
+
+**Primary Actor:**  
+Data Analyst / Researcher
+
+**Trigger:**  
+User selects “City Reports” in the interface.
 
 ---
 
-##  Population Distribution Reports (UC23–UC25)
-
-### Use Case 23: Population Distribution by Continent
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants population totals and percentages for each continent.  
-**Flow:**
-1. User selects “Population by Continent.”
-2. System queries continent-level data.
-3. System calculates totals, in-city, and non-city values.
-4. System displays results.
-
-**Acceptance Criteria:**
-- Data is accurate and includes correct percentages.
+### MAIN SUCCESS SCENARIO
+1. User navigates to **“City Reports.”**
+2. User selects a filter (World, Continent, Region, Country, District, or Top N).
+3. System retrieves city population data.
+4. System sorts results by population.
+5. System displays report.
+6. User may export or save the results.
 
 ---
 
-### Use Case 24: Population Distribution by Region
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants population distribution by region.  
-**Flow:**
-1. User selects “Population by Region.”
-2. System queries and calculates totals and percentages.
-3. System displays data.
-
-**Acceptance Criteria:**
-- Values and percentages are correct.
+### EXTENSIONS
+- **2a:** Invalid N value → System prompts valid input.
+- **3a:** Missing region/country data → Display “Incomplete geographic data.”
 
 ---
 
-### Use Case 25: Population Distribution by Country
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to see total and city vs. non-city population by country.  
-**Flow:**
-1. User selects “Population by Country.”
-2. System queries and calculates.
-3. System displays results.
-
-**Acceptance Criteria:**
-- Data is complete and correct.
+### SUB-VARIATIONS
+- Reports for World, Continent, Region, Country, District
+- Top N most populated cities at each level
 
 ---
 
-## Population by Location (UC26–UC31)
-
-### Use Case 26–31: View Population Total (World / Continent / Region / Country / District / City)
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view total population for a chosen area (global or specific location).  
-**Flow:**
-1. User selects report type and location.
-2. System queries database for total population.
-3. System displays the result.
-
-**Acceptance Criteria:**
-- Population totals match database records.
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
 
 ---
 
-## Language Reports (UC32)
+##   Capital City Reports
 
-### Use Case 32: Language Report (Top 5 Languages)
-**Actor:** User  
-**Precondition:** Database connection is established.  
-**Description:** User wants to view the population of speakers for Chinese, English, Hindi, Spanish, and Arabic, including percentage of the world population.  
-**Flow:**
-1. User selects “Language Report.”
-2. System queries language data.
-3. System calculates speaker counts and percentages.
-4. System sorts and displays results.
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Enable analysis of capital city populations globally, by continent, or by region.
 
-**Acceptance Criteria:**
-- Languages are sorted by total speakers.
-- Percentages are accurate.
+**Scope:**  
+Population Reporting System
+
+**Level:**  
+Primary Task
+
+**Preconditions:**  
+Capital city data is linked to countries and regions, and population data is current.
+
+**Success End Condition:**  
+Capital cities are displayed and sorted correctly by population per selected criteria.
+
+**Failed End Condition:**  
+System returns empty or inaccurate data.
+
+**Primary Actor:**  
+Data Analyst / Researcher
+
+**Trigger:**  
+User selects “Capital City Reports.”
 
 ---
 
+### MAIN SUCCESS SCENARIO
+1. User accesses **Capital City Reports.**
+2. Selects filter (World, Continent, Region, or Top N).
+3. System fetches capital cities and their population data.
+4. Data is sorted in descending order by population.
+5. Report is displayed.
 
+---
+
+### EXTENSIONS
+- **2a:** Invalid region input → System prompts for correction.
+- **3a:** Data inconsistency → Log error and alert administrator.
+
+---
+
+### SUB-VARIATIONS
+- View all capital cities (World, Continent, Region)
+- View Top N capital cities (Global or by area)
+
+---
+
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
+
+---
+
+##  Population Reports (Urbanisation)
+
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Generate reports showing total, city, and non-city populations for continents, regions, and countries.
+
+**Scope:**  
+Population Reporting and Analysis System
+
+**Level:**  
+Primary Task
+
+**Preconditions:**  
+Population and city data exist for all geographic entities.
+
+**Success End Condition:**  
+User receives urbanisation statistics (% in cities vs. non-cities).
+
+**Failed End Condition:**  
+System fails to compute or retrieve required data.
+
+**Primary Actor:**  
+Data Analyst / Researcher
+
+**Trigger:**  
+User selects “Population Reports.”
+
+---
+
+### MAIN SUCCESS SCENARIO
+1. User opens **Population Reports.**
+2. Selects level (Continent, Region, or Country).
+3. System retrieves total, city, and non-city populations.
+4. System calculates urbanisation percentages.
+5. Report is displayed.
+
+---
+
+### EXTENSIONS
+- **4a:** Missing data → Display “Incomplete data for selected entity.”
+
+---
+
+### SUB-VARIATIONS
+- Continent-level reports
+- Region-level reports
+- Country-level reports
+
+---
+
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
+
+---
+
+##   World and Area Populations
+
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Provide total population reports at different geographic levels — World, Continent, Region, Country, District, and City.
+
+**Scope:**  
+Population Reporting System
+
+**Level:**  
+Primary Task
+
+**Preconditions:**  
+Geographic hierarchy and population data are validated and complete.
+
+**Success End Condition:**  
+Accurate population totals are displayed for each selected level.
+
+**Failed End Condition:**  
+Data retrieval or aggregation error occurs.
+
+**Primary Actor:**  
+Data Analyst / Researcher
+
+**Trigger:**  
+User selects “Population by Area.”
+
+---
+
+### MAIN SUCCESS SCENARIO
+1. User chooses desired area level.
+2. System queries and aggregates corresponding population data.
+3. System returns totals.
+4. Report is displayed or exported.
+
+---
+
+### EXTENSIONS
+- **2a:** Database connection issue → System retries and notifies user.
+
+---
+
+### SUB-VARIATIONS
+- Reports by World, Continent, Region, Country, District, City.
+
+---
+
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
+
+---
+
+##  Language Reports
+
+### CHARACTERISTIC INFORMATION
+**Goal in Context:**  
+Show the number and percentage of people speaking major world languages (e.g., Chinese, English, Hindi, Spanish, Arabic).
+
+**Scope:**  
+Population Reporting System
+
+**Level:**  
+Primary Task
+
+**Preconditions:**  
+Language and population data are available and mapped to global totals.
+
+**Success End Condition:**  
+System displays population counts and percentage shares for each language.
+
+**Failed End Condition:**  
+Missing data or failed calculations.
+
+**Primary Actor:**  
+Data Analyst
+
+**Trigger:**  
+User selects “Language Reports.”
+
+---
+
+### MAIN SUCCESS SCENARIO
+1. User opens **Language Reports.**
+2. System retrieves data for selected major languages.
+3. System computes total speakers and global percentages.
+4. Data is displayed as a table or chart.
+
+---
+
+### EXTENSIONS
+- **3a:** Missing world population total → Display “Percentage cannot be calculated.”
+
+---
+
+### SUB-VARIATIONS
+- Include all major languages or top 5 globally.
+
+---
+
+### SCHEDULE
+**Due Date:** Version v0.1.0.2
+
+---
+
+##  Document Summary
+This document defines all major **reporting use cases** for *Population Reporting System v0.1.0.2*.  
+It supports development, testing, and stakeholder review by clearly identifying user goals, expected outcomes, and exception handling for each module.
+
+---
