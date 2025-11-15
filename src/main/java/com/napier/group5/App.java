@@ -170,64 +170,64 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
+                // ----------------- section titles + the 32 reports -----------------
+
+                System.out.println("\n======================");
+                System.out.println("Country Reports");
+                System.out.println("======================");
+
+                // 1
+                runQuery(con, "1. All Countries by Population (World)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 2
+                runQuery(con, "2. Countries by Population (Continent = Asia)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Continent = 'Asia'
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 3
+                runQuery(con, "3. Countries by Population (Region = Caribbean)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Region = 'Caribbean'
+                        ORDER BY Population DESC
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
 
 
                 System.out.println("\n======================");
                 System.out.println("City Reports");
                 System.out.println("======================");
 
-                // 7
-                runQuery(con, "7. All cities in world",
-                        """
-                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
-                        FROM city ci
-                        LEFT JOIN country c ON ci.CountryCode = c.Code
-                        ORDER BY Population DESC
-                        """,
-                        "Name","Country","District","Population");
-                // 8
-                runQuery(con, "8. Cities by continent (Africa)",
-                        """
-                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
-                        FROM city ci
-                        LEFT JOIN country c ON ci.CountryCode = c.Code
-                        WHERE c.Continent = 'Africa'
-                        ORDER BY Population DESC
-                        """,
-                        "Name","Country","District","Population");
 
-                // 9
-                runQuery(con, "9. Cities by region (Central Africa)",
-                        """
-                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
-                        FROM city ci
-                        LEFT JOIN country c ON ci.CountryCode = c.Code
-                        WHERE c.Region = 'Central Africa'
-                        ORDER BY Population DESC
-                        """,
-                        "Name","Country","District","Population");
 
-                // 10
-                runQuery(con, "10. Cities by country (Argentina)",
-                        """
-                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
-                        FROM city ci
-                        LEFT JOIN country c ON ci.CountryCode = c.Code
-                        WHERE c.Name = 'Argentina'
-                        ORDER BY Population DESC
-                        """,
-                        "Name","Country","District","Population");
+                System.out.println("\n======================");
+                System.out.println("Capital City Reports");
+                System.out.println("======================");
 
-                // 11
-                runQuery(con, "11. Cities by district (Limburg)",
-                        """
-                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
-                        FROM city ci
-                        LEFT JOIN country c ON ci.CountryCode = c.Code
-                        WHERE ci.District = 'Limburg'
-                        ORDER BY Population DESC
-                        """,
-                        "Name","Country","District","Population");
+
+
+                System.out.println("\n=================================================");
+                System.out.println("Population Distribution and Population by Location");
+                System.out.println("==================================================");
+
+
+
+                System.out.println("\n======================");
+                System.out.println("Language Reports");
+                System.out.println("======================");
 
                 // 12
                 runQuery(con, "12. Top 10 cities in world",
