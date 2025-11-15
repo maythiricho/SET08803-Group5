@@ -229,6 +229,64 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
+                // 12
+                runQuery(con, "12. Top 10 cities in world",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 13
+                runQuery(con, "13. Top 10 cities by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Continent = 'Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 14
+                runQuery(con, "14. Top 10 cities by region (Central Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Region = 'Central Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 15
+                runQuery(con, "15. Top 10 cities by country (Argentina)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Name = 'Argentina'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 16
+                runQuery(con, "16. Top 10 cities by district (Limburg)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE ci.District = 'Limburg'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
 
             }
         } catch (Exception e) {
