@@ -207,6 +207,41 @@ public class App {
                         """,
                         "Name","Country","Population");
 
+                // 20
+                runQuery(con, "20. Top 10 capitals in world",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
+                // 21
+                runQuery(con, "21. Top 10 capitals by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Continent = 'Africa'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
+                // 22
+                runQuery(con, "22. Top 10 capitals by region (Western Europe)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Region = 'Western Europe'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
             }
 
         } catch (Exception e) {
