@@ -170,7 +170,6 @@ public class App {
             try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
                 System.out.println("✅ Connected!");
 
-
                 System.out.println("\n======================");
                 System.out.println("Country Reports");
                 System.out.println("======================");
@@ -236,6 +235,7 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
             }
+
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
             e.printStackTrace();
