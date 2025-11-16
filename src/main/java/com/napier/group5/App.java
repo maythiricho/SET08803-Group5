@@ -204,6 +204,37 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
+                // 4
+                runQuery(con, "4. Top N Countries (World)",
+                        """
+                                SELECT Code, Name, Continent, Region, Population, Capital
+                                FROM country
+                                ORDER BY Population DESC
+                                LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 5
+                runQuery(con, "5. Top N Countries (Continent = Europe)",
+                        """
+                                SELECT Code, Name, Continent, Region, Population, Capital
+                                FROM country
+                                WHERE Continent = 'Europe'
+                                ORDER BY Population DESC
+                                LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 6
+                runQuery(con, "6. Top N Countries (Region = Western Europe)",
+                        """
+                                SELECT Code, Name, Continent, Region, Population, Capital
+                                FROM country
+                                WHERE Region = 'Western Europe'
+                                ORDER BY Population DESC
+                                LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
             }
         } catch (Exception e) {
             System.err.println(" Error: " + e.getMessage());
