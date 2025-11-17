@@ -55,10 +55,28 @@ jobs:
         run: docker build -t world-db ./db
 
       - name: Run world database container
-        # match AppIntegrationTest: localhost:3307
+        # Map 3307 on host -> 3306 in container (matches your test)
         run: docker run --name world-int-db -dp 3307:3306 world-db
 
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..30}; do
+            if docker exec world-int-db mysqladmin ping -h 127.0.0.1 -uroot -pexample --silent; then
+              echo "MySQL is up!"
+              exit 0
+            fi
+            echo "  Still starting... ($i/30)"
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
       - name: Run integration tests
+        env:
+          INT_DB_URL: jdbc:mysql://localhost:3307/world?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          INT_DB_USER: app
+          INT_DB_PASSWORD: app123
         run: mvn -B -Dtest=com.napier.group5.AppIntegrationTest test
 
       - name: Stop and remove world database container
@@ -66,7 +84,8 @@ jobs:
         run: |
           docker stop world-int-db || true
           docker rm world-int-db || true
-          docker image rm world-db || true      
+          docker image rm world-db || true
+  
 
   worldpopulation-report:
     name: WorldPopulation Report
