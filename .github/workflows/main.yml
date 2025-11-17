@@ -30,7 +30,8 @@ jobs:
           cache: 'maven'
 
       - name: Run unit tests
-        run: mvn -B test
+        run: mvn -B -Dtest=com.napier.group5.AppTest test
+
 
   integration-tests:
     name: Integration Tests
@@ -54,7 +55,8 @@ jobs:
         run: docker build -t world-db ./db
 
       - name: Run world database container
-        run: docker run --name world-int-db -dp 33060:3306 world-db
+        # match AppIntegrationTest: localhost:3307
+        run: docker run --name world-int-db -dp 3307:3306 world-db
 
       - name: Run integration tests
         run: mvn -B -Dtest=com.napier.group5.AppIntegrationTest test
@@ -69,7 +71,9 @@ jobs:
   worldpopulation-report:
     name: WorldPopulation Report
     runs-on: ubuntu-22.04
-    needs: unit-tests        # only run if Unit Tests job passes
+    needs:
+      - unit-tests
+      - integration-tests    # run only if both test stages pass
 
     steps:
       - name: Checkout
