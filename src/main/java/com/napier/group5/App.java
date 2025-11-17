@@ -212,6 +212,38 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
+                // 4
+                runQuery(con, "4. Top 10 Countries (World)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 5
+                runQuery(con, "5. Top 10 Countries (Continent = Europe)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Continent = 'Europe'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+                // 6
+                runQuery(con, "6. Top 10 Countries (Region = Western Europe)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Region = 'Western Europe'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
 
                 System.out.println("\n======================");
                 System.out.println("City Reports");
@@ -271,6 +303,65 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
+                // 12
+                runQuery(con, "12. Top 10 cities in world",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 13
+                runQuery(con, "13. Top 10 cities by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Continent = 'Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 14
+                runQuery(con, "14. Top 10 cities by region (Central Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Region = 'Central Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 15
+                runQuery(con, "15. Top 10 cities by country (Argentina)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Name = 'Argentina'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 16
+                runQuery(con, "16. Top 10 cities by district (Limburg)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE ci.District = 'Limburg'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
 
                 System.out.println("\n======================");
                 System.out.println("Capital City Reports");
@@ -305,6 +396,41 @@ public class App {
                         INNER JOIN country co ON ci.ID = co.Capital
                         WHERE co.Region = 'Eastern Asia'
                         ORDER BY ci.Population DESC
+                        """,
+                        "Name","Country","Population");
+
+                // 20
+                runQuery(con, "20. Top 10 capitals in world",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
+                // 21
+                runQuery(con, "21. Top 10 capitals by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Continent = 'Africa'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
+                // 22
+                runQuery(con, "22. Top 10 capitals by region (Western Europe)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Region = 'Western Europe'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
                         """,
                         "Name","Country","Population");
 
