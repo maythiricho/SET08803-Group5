@@ -159,22 +159,45 @@ public class App {
     }
 
     // ---------- main ----------
+    // ---------- main ----------
     public static void main(String[] args) {
-        String host = env("DB_HOST", "127.0.0.1");   // in compose: "db"
-        String port = env("DB_PORT", "3306");
+        String host;
+        String port;
+
+        // If Docker passes "db:3306" and "30000"
+        if (args.length >= 1) {
+            String[] hp = args[0].split(":");
+            host = hp[0];
+            port = hp.length > 1 ? hp[1] : "3306";
+        } else {
+            // Fallback for local runs (no command-line args)
+            host = env("DB_HOST", "127.0.0.1");
+            port = env("DB_PORT", "3306");
+        }
+
+        // Optional 2nd argument for timeout (ms), default 30000
+        int timeoutMs = (args.length >= 2)
+                ? Integer.parseInt(args[1])
+                : 30000;
+
         String db   = env("DB_NAME", "world");
         String user = env("DB_USER", "app");
         String pass = env("DB_PASSWORD", "app123");
 
         String url = String.format(
-                    "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 host, port, db
         );
-        System.out.printf("DB -> %s  user=%s%n", url, user);
+        System.out.printf("DB -> %s  user=%s  timeout=%dms%n", url, user, timeoutMs);
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
+
+            int attempts = 12;
+            Duration wait = Duration.ofMillis(timeoutMs / attempts);
+
+            try (Connection con = connectWithRetry(url, user, pass, attempts, wait)) {
+
                 System.out.println(" Connected!");
 
                 // ----------------- section titles + the 21 reports -----------------
