@@ -36,9 +36,9 @@ services:
       DB_USER: app
       DB_PASSWORD: app123
     # keep app running + define healthcheck
-    command: [ "sh", "-c", "java -jar /app/app.jar && tail -f /dev/null" ]
+    command: [ "sh", "-c", "java -jar /app/devops.jar && tail -f /dev/null" ]
     healthcheck:
-      test: ["CMD-SHELL", "pgrep -f 'java .*app.jar' >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "pgrep -f 'java .*devops.jar' >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3

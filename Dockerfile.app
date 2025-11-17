@@ -19,4 +19,4 @@ COPY --from=build /src/target/*-shaded.jar /app/app.jar
 # Default DB connection (overridden by Compose env)
 ENV DB_HOST=db DB_PORT=3306 DB_NAME=world DB_USER=app DB_PASSWORD=app123
 
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-jar","/app/devops.jar"]
