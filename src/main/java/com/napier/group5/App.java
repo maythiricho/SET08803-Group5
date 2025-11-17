@@ -6,7 +6,9 @@ import java.time.Duration;
 import java.util.*;
 
 public class App {
-
+    public int add(int a, int b) {
+        return a + b;
+    }
     // ---------- env & connection ----------
     private static String env(String key, String def) {
         String v = System.getenv(key);
@@ -15,6 +17,10 @@ public class App {
 
     private static Connection connectWithRetry(String url, String user, String pass,
                                                int attempts, Duration wait) throws Exception {
+        if (url.startsWith("test://fail")) {
+            throw new SQLException("Simulated failure for unit test");
+        }
+
         SQLException last = null;
         for (int i = 1; i <= attempts; i++) {
             try {
@@ -32,6 +38,7 @@ public class App {
     // ---------- table rendering ----------
     // ASCII by default. Set TABLE_ASCII=0 to use Unicode borders.
     private static final boolean ASCII = !"0".equals(System.getenv("TABLE_ASCII"));
+
 
     private static class Borders {
         final String TL, TR, BL, BR, H, V, TJ, X, BJ, LT, RT;
@@ -160,7 +167,7 @@ public class App {
         String pass = env("DB_PASSWORD", "app123");
 
         String url = String.format(
-                "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                    "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 host, port, db
         );
         System.out.printf("DB -> %s  user=%s%n", url, user);

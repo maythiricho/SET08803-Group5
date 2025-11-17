@@ -1,5 +1,15 @@
 name: A workflow for WorldPopulation
-on: push
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - 'feature/*'
+      - 'release/*'
+  pull_request:
+    branches:
+      - develop
+
 
 jobs:
   build:
@@ -17,5 +27,10 @@ jobs:
           distribution: 'adopt'
       - name: Build with Maven
         run: mvn package
+      - name: Unit -B test
+        run: mvn test
       - name: Run docker compose
         run: docker compose up --abort-on-container-exit
+
+
+
