@@ -29,19 +29,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # (env vars are optional now, App uses command-line args, but harmless to keep)
     environment:
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: world
       DB_USER: app
       DB_PASSWORD: app123
-    # keep app running + define healthcheck
-    command: [ "sh", "-c", "java -jar /target/devops.jar && tail -f /dev/null" ]
-    healthcheck:
-      test: ["CMD-SHELL", "pgrep -f 'java .*devops.jar' >/dev/null || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
     networks:
       - devopsnet
 
