@@ -14,9 +14,9 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy shaded JAR built by Maven
-COPY --from=build /src/target/*-shaded.jar /app/app.jar
+COPY --from=build /src/target/*-shaded.jar /target/devops.jar
 
 # Default DB connection (overridden by Compose env)
 ENV DB_HOST=db DB_PORT=3306 DB_NAME=world DB_USER=app DB_PASSWORD=app123
 
-ENTRYPOINT ["java","-jar","/app/devops.jar"]
+ENTRYPOINT ["java","-jar","/target/devops.jar"]
