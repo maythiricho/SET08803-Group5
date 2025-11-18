@@ -15,8 +15,8 @@ public class App {
         return (v == null || v.isBlank()) ? def : v;
     }
 
-    private static Connection connectWithRetry(String url, String user, String pass,
-                                               int attempts, Duration wait) throws Exception {
+    static Connection connectWithRetry(String url, String user, String pass,
+                                       int attempts, Duration wait) throws Exception {
         if (url.startsWith("test://fail")) {
             throw new SQLException("Simulated failure for unit test");
         }
@@ -111,7 +111,7 @@ public class App {
         return sb.toString();
     }
 
-    private static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
+    static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -160,25 +160,40 @@ public class App {
 
     // ---------- main ----------
     // ---------- main ----------
-    public static void main(String[] args) {
+    // ---------- helpers for argument parsing (easier to test) ----------
+
+    /** Resolve host and port from command-line args or environment variables. */
+    static String[] resolveHostPort(String[] args) {
         String host;
         String port;
 
-        // If Docker passes "db:3306" and "30000"
         if (args.length >= 1) {
             String[] hp = args[0].split(":");
             host = hp[0];
             port = hp.length > 1 ? hp[1] : "3306";
         } else {
-            // Fallback for local runs (no command-line args)
             host = env("DB_HOST", "127.0.0.1");
             port = env("DB_PORT", "3306");
         }
+        return new String[]{host, port};
+    }
 
-        // Optional 2nd argument for timeout (ms), default 30000
-        int timeoutMs = (args.length >= 2)
-                ? Integer.parseInt(args[1])
-                : 30000;
+    /** Resolve timeout in milliseconds from args (default 30000). */
+    static int resolveTimeoutMs(String[] args) {
+        if (args.length >= 2) {
+            return Integer.parseInt(args[1]);
+        }
+        return 30000;
+    }
+
+    public static void main(String[] args) {
+        // Use small helper methods so we can unit-test all branches
+        String[] hp = resolveHostPort(args);
+        String host = hp[0];
+        String port = hp[1];
+
+        int timeoutMs = resolveTimeoutMs(args);
+
 
         String db   = env("DB_NAME", "world");
         String user = env("DB_USER", "app");
