@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - unit-tests
-      - integration-tests    # run only if both test stages pass
+      - integration-tests    # run only if both test stages passpass
 
     steps:
       - name: Checkout
