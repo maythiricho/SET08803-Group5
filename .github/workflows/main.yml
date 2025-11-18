@@ -83,10 +83,9 @@ jobs:
         if: success()
         uses: codecov/codecov-action@v4
         with:
-          # If your repo is public, token can be omitted.
-          # token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./target/site/jacoco
-          flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./target/site/jacoco/jacoco.xml
+          flags: unittests
           verbose: true
 
       - name: Stop and remove world database container
