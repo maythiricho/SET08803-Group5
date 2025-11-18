@@ -545,8 +545,4 @@ public class AppIntegrationTest {
         int t2 = App.resolveTimeoutMs(new String[]{"db:3307"});
         assertEquals(30000, t2);
     }
-
-
-
-
 }
