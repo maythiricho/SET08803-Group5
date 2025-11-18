@@ -79,6 +79,16 @@ jobs:
           INT_DB_PASSWORD: app123
         run: mvn -B -Dtest=com.napier.group5.AppIntegrationTest test
 
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          # If your repo is public, token can be omitted.
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./target/site/jacoco
+          flags: integration
+          verbose: true
+
       - name: Stop and remove world database container
         if: always()
         run: |
