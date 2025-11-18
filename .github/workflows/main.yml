@@ -79,6 +79,8 @@ jobs:
           INT_DB_PASSWORD: app123
         run: mvn -B -Dtest=com.napier.group5.AppIntegrationTest test
 
+      - name: Run all tests with coverage
+        run: mvn -B test
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v4
