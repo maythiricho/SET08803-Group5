@@ -44,6 +44,8 @@ The **Population Information Reporting System** allows users to:
 **Latest Release:**  
 [![Releases](https://img.shields.io/github/release/maythiricho/SET08803-Group5/all.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/releases)
 
+**Code Cov**
+[![codecov](https://codecov.io/github/maythiricho/SET08803-Group5/graph/badge.svg?token=14BB4L0MSQ)](https://codecov.io/github/maythiricho/SET08803-Group5)
 ---
 ## Scrum & Collaboration
 This project follows Scrum methodology:
@@ -77,7 +79,7 @@ This project is licensed under the MIT License.
 ---
 
 ## Version
-Current Release: v0.1.0.2-alpha  
+Current Release: Latest 
 [View all releases](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
