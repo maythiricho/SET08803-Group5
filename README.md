@@ -38,13 +38,15 @@ The **Population Information Reporting System** allows users to:
 | **master** | ![Build Status (master)](https://img.shields.io/github/actions/workflow/status/maythiricho/SET08803-Group5/main.yml?branch=master) |  
 | **develop** | ![Build Status (develop)](https://img.shields.io/github/actions/workflow/status/maythiricho/SET08803-Group5/main.yml?branch=develop) |  
 
-**License:**  
+Project Badges 
+
+License:
 [![License](https://img.shields.io/github/license/maythiricho/SET08803-Group5.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/blob/master/LICENSE)
 
-**Latest Release:**  
+Latest Release:
 [![Releases](https://img.shields.io/github/release/maythiricho/SET08803-Group5/all.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/releases)
 
-**Code Cov**
+Code Coverage:
 [![codecov](https://codecov.io/gh/maythiricho/SET08803-Group5/branch/develop/graph/badge.svg?token=14BB4L0MSQ)](https://codecov.io/gh/maythiricho/SET08803-Group5)
 
 ---
