@@ -45,7 +45,8 @@ The **Population Information Reporting System** allows users to:
 [![Releases](https://img.shields.io/github/release/maythiricho/SET08803-Group5/all.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/releases)
 
 **Code Cov**
-[![codecov](https://codecov.io/github/maythiricho/SET08803-Group5/tree/develop/graph/badge.svg?token=14BB4L0MSQ)](https://codecov.io/github/maythiricho/SET08803-Group5/tree/develop)
+[![codecov](https://codecov.io/gh/maythiricho/SET08803-Group5/branch/develop/graph/badge.svg?token=14BB4L0MSQ)](https://codecov.io/gh/maythiricho/SET08803-Group5)
+
 ---
 ## Scrum & Collaboration
 This project follows Scrum methodology:
