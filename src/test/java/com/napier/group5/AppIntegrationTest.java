@@ -342,7 +342,7 @@ public class AppIntegrationTest {
 
     @Test
     void tableTop5EuropeanCountriesByPopulation() throws Exception {
-        // SQL for Top 5 European countries, highest population first
+        // SQL for Top 5 European countries, highest population firstt
         String sql =
                 "SELECT Name, Population " +
                         "FROM country " +
