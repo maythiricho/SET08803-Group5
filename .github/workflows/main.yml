@@ -1,21 +1,136 @@
 name: A workflow for WorldPopulation
-on: push
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - 'feature/*'
+      - 'release/*'
+  pull_request:
+    branches:
+      - develop
+permissions:
+  contents: write
 
 jobs:
-  build:
-    name: WorldPopulation Report
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Set up JDK 18
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '18'
-          distribution: 'adopt'
-      - name: Build with Maven
-        run: mvn package
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run unit tests
+        run: mvn -B -Dtest=com.napier.group5.AppTest test
+
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-22.04
+    needs: unit-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build world database image
+        run: docker build -t world-db ./db
+
+      - name: Run world database container
+        # Map 3307 on host -> 3306 in container (matches your test)
+        run: docker run --name world-int-db -dp 3307:3306 world-db
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..30}; do
+            if docker exec world-int-db mysqladmin ping -h 127.0.0.1 -uroot -pexample --silent; then
+              echo "MySQL is up!"
+              exit 0
+            fi
+            echo "  Still starting... ($i/30)"
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Run integration tests
+        env:
+          INT_DB_URL: jdbc:mysql://localhost:3307/world?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          INT_DB_USER: app
+          INT_DB_PASSWORD: app123
+        run: mvn -B -Dtest=com.napier.group5.AppIntegrationTest test
+
+      - name: Run all tests with coverage
+        run: mvn -B test
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./target/site/jacoco/jacoco.xml
+          flags: unittests
+          verbose: true
+
+      - name: Stop and remove world database container
+        if: always()
+        run: |
+          docker stop world-int-db || true
+          docker rm world-int-db || true
+          docker image rm world-db || true
+  
+
+  worldpopulation-report:
+    name: WorldPopulation Report
+    runs-on: ubuntu-22.04
+    needs:
+      - unit-tests
+      - integration-tests    # run only if both test stages passpass1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build with Maven (skip tests)
+        run: mvn -B package -DskipTests
+
       - name: Run docker compose
-        run: docker compose up --abort-on-container-exit
+        run: docker compose up --build --abort-on-container-exit
+
+      - name: Upload Release Artifact
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          automatic_release_tag: "latest"
+          files: |
+            ./target/devops.jar

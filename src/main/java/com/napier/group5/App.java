@@ -4,34 +4,78 @@ import java.sql.*;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class App {
+    private static final Logger log = Logger.getLogger(App.class.getName());
+    static {
+        // Set logger level to FINE (prints FINE, INFO, WARNING, SEVERE)
+        log.setLevel(Level.FINE);
 
+        // Configure root logger's handlers (e.g., ConsoleHandler)
+        Logger rootLogger = Logger.getLogger("");
+        for (var handler : rootLogger.getHandlers()) {
+            handler.setLevel(Level.FINE);
+
+            // Optional: simple formatter for cleaner output
+            handler.setFormatter(new java.util.logging.SimpleFormatter() {
+                private static final String format = "%4$s: %5$s%n";
+                @Override
+                public synchronized String format(java.util.logging.LogRecord lr) {
+                    return String.format(format,
+                            lr.getSourceClassName(),
+                            lr.getLoggerName(),
+                            lr.getLevel().getLocalizedName(),
+                            lr.getLevel().getName(),
+                            lr.getMessage()
+                    );
+                }
+            });
+        }
+    }
+    public int add(int a, int b) {
+        return a + b;
+    }
     // ---------- env & connection ----------
     private static String env(String key, String def) {
+
         String v = System.getenv(key);
         return (v == null || v.isBlank()) ? def : v;
     }
 
-    private static Connection connectWithRetry(String url, String user, String pass,
-                                               int attempts, Duration wait) throws Exception {
+    // Example changes inside App
+
+    static Connection connectWithRetry(String url, String user, String pass,
+                                       int attempts, Duration wait) throws Exception {
+        if (url.startsWith("test://fail")) {
+            throw new SQLException("Simulated failure for unit test");
+        }
+
         SQLException last = null;
         for (int i = 1; i <= attempts; i++) {
             try {
-                System.out.printf("Connecting (attempt %d/%d)...%n", i, attempts);
+                if (log.isLoggable(Level.INFO)) {
+                    int finalI = i;
+                    log.info(() -> String.format("Connecting (attempt %d/%d)...", finalI, attempts));
+                }
                 return DriverManager.getConnection(url, user, pass);
             } catch (SQLException e) {
                 last = e;
-                System.out.println("Not ready yet: " + e.getMessage());
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning(() -> "Not ready yet: " + e.getMessage());
+                }
                 Thread.sleep(wait.toMillis());
             }
         }
         throw last;
     }
 
+
     // ---------- table rendering ----------
     // ASCII by default. Set TABLE_ASCII=0 to use Unicode borders.
     private static final boolean ASCII = !"0".equals(System.getenv("TABLE_ASCII"));
+
 
     private static class Borders {
         final String TL, TR, BL, BR, H, V, TJ, X, BJ, LT, RT;
@@ -52,8 +96,9 @@ public class App {
     private static final Borders B = new Borders(ASCII);
 
     private static void printTable(String title, String[] headers, List<String[]> rows, boolean[] rightAlign) {
-        System.out.println();
-        System.out.println(title);  // e.g., "32. Population by language (...)"
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> "\n" + title);
+        }
 
         // widths
         int cols = headers.length;
@@ -68,17 +113,19 @@ public class App {
         String mid = line(B.LT, B.X , B.RT, w);
         String bot = line(B.BL, B.BJ, B.BR, w);
 
-        // render grid
-        System.out.println(top);
-        System.out.println(row(headers, w, new boolean[cols])); // header left aligned
-        System.out.println(mid);
-        for (int r = 0; r < rows.size(); r++) {
-            System.out.println(row(rows.get(r), w, rightAlign));
-            // horizontal rule after every row (grid look)
-            System.out.println(r == rows.size() - 1 ? bot : mid);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> top);
+            log.info(() -> row(headers, w, new boolean[cols])); // header
+            log.info(() -> mid);
+            for (int r = 0; r < rows.size(); r++) {
+                int rowIndex = r;
+                log.info(() -> row(rows.get(rowIndex), w, rightAlign));
+                log.info(() -> rowIndex == rows.size() - 1 ? bot : mid);
+            }
+            if (rows.isEmpty()) log.info(() -> bot);
         }
-        if (rows.isEmpty()) System.out.println(bot);
     }
+
 
     private static String line(String left, String join, String right, int[] w) {
         StringBuilder sb = new StringBuilder(left);
@@ -104,7 +151,7 @@ public class App {
         return sb.toString();
     }
 
-    private static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
+    static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -152,9 +199,42 @@ public class App {
     }
 
     // ---------- main ----------
+    // ---------- main ----------
+    // ---------- helpers for argument parsing (easier to test) ----------
+
+    /** Resolve host and port from command-line args or environment variables. */
+    static String[] resolveHostPort(String[] args) {
+        String host;
+        String port;
+
+        if (args.length >= 1) {
+            String[] hp = args[0].split(":");
+            host = hp[0];
+            port = hp.length > 1 ? hp[1] : "3306";
+        } else {
+            host = env("DB_HOST", "127.0.0.1");
+            port = env("DB_PORT", "3306");
+        }
+        return new String[]{host, port};
+    }
+
+    /** Resolve timeout in milliseconds from args (default 30000). */
+    static int resolveTimeoutMs(String[] args) {
+        if (args.length >= 2) {
+            return Integer.parseInt(args[1]);
+        }
+        return 30000;
+    }
+
     public static void main(String[] args) {
-        String host = env("DB_HOST", "127.0.0.1");   // in compose: "db"
-        String port = env("DB_PORT", "3306");
+        // Use small helper methods so we can unit-test all branches
+        String[] hp = resolveHostPort(args);
+        String host = hp[0];
+        String port = hp[1];
+
+        int timeoutMs = resolveTimeoutMs(args);
+
+
         String db   = env("DB_NAME", "world");
         String user = env("DB_USER", "app");
         String pass = env("DB_PASSWORD", "app123");
@@ -163,12 +243,20 @@ public class App {
                 "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 host, port, db
         );
-        System.out.printf("DB -> %s  user=%s%n", url, user);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> String.format("DB -> %s  user=%s  timeout=%dms%n", url, user, timeoutMs));
+        }
+
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
-                System.out.println("✅ Connected!");
+
+            int attempts = 12;
+            Duration wait = Duration.ofMillis(timeoutMs / attempts);
+
+            try (Connection con = connectWithRetry(url, user, pass, attempts, wait)) {
+
+                log.info(" Connected!");
 
 
 
@@ -290,8 +378,9 @@ public class App {
 
             }
         } catch (Exception e) {
-            System.err.println(" Error: " + e.getMessage());
-            e.printStackTrace();
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe(() -> String.format("Error: " + e.getMessage(), e));
+            }
             System.exit(1);
         }
     }
