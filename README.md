@@ -36,13 +36,18 @@ The **Population Information Reporting System** allows users to:
 | Branch | Build Status |  
 |---------|---------------|  
 | **master** | ![Build Status (master)](https://img.shields.io/github/actions/workflow/status/maythiricho/SET08803-Group5/main.yml?branch=master) |  
-| **develop** | ![Build Status (develop)](https://img.shields.io/github/actions/workflow/status/maythiricho/SET08803-Group5/main.yml?branch=develop) |  
+| **develop** | ![Build Status (develop)](https://img.shields.io/github/actions/workflow/status/maythiricho/SET08803-Group5/main.yml?branch=develop) |
 
-**License:**  
+## Project Badges 
+    
+License:
 [![License](https://img.shields.io/github/license/maythiricho/SET08803-Group5.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/blob/master/LICENSE)
 
-**Latest Release:**  
+Latest Release:
 [![Releases](https://img.shields.io/github/release/maythiricho/SET08803-Group5/all.svg?style=flat-square)](https://github.com/maythiricho/SET08803-Group5/releases)
+
+Code Coverage:
+[![codecov](https://codecov.io/gh/maythiricho/SET08803-Group5/branch/develop/graph/badge.svg?token=14BB4L0MSQ)](https://codecov.io/gh/maythiricho/SET08803-Group5)
 
 ---
 ## Scrum & Collaboration
@@ -56,10 +61,10 @@ This project follows Scrum methodology:
 
 ## Team Roles
 
-| Role | Member                                                                                                                                                                                                                   | Responsibilities |
-|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
-| Product Owner | *[May Thiri Cho](https://github.com/maythiricho)*                                                                                                                                                                        | Defines backlog, ensures requirements meet goals |
-| Scrum Master | *[Phyo Zaw Aung](https://github.com/phyozawaung005)*                                                                                                                                                                     | Facilitates Scrum meetings and team workflow |
+| Role | Member                                                                                                                                                               | Responsibilities |
+|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
+| Product Owner | *[May Thiri Cho](https://github.com/maythiricho)*                                                                                                                    | Defines backlog, ensures requirements meet goals |
+| Scrum Master | *[Phyo Zaw Aung](https://github.com/phyozawaung005)*                                                                                                                 | Facilitates Scrum meetings and team workflow |
 | Developers/Testers | *[Kyaw Zayar Min](https://github.com/KyawZayarMin1234)*, *[Phyo Thura Kyaw](https://github.com/Segma-tech)*, *[Htet Arkar Saw Naung](https://github.com/Rayyy990)*, *[Hein Htet Lin](https://github.com/heinhtetlin810)* | Implement, test, and document features |
 
 ---
@@ -77,7 +82,7 @@ This project is licensed under the MIT License.
 ---
 
 ## Version
-Current Release: v1.0.0-alpha  
+Current Release: Latest 
 [View all releases](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
