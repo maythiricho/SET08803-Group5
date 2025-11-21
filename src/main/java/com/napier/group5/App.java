@@ -44,7 +44,7 @@ public class App {
         return (v == null || v.isBlank()) ? def : v;
     }
 
-    // Example changes inside App
+    // Example changes inside Appp
 
     static Connection connectWithRetry(String url, String user, String pass,
                                        int attempts, Duration wait) throws Exception {
