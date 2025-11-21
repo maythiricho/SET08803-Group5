@@ -1,0 +1,100 @@
+name: Bug Report
+description: File a bug report for the SET08803-Group5 project.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - maythiricho
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!  
+        Please provide as much detail as possible so we can fix the issue quickly.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: If we need more information, how can we contact you?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the issue. What did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Project Version
+      description: Which version or branch of the project are you using?
+      options:
+        - main (Default)
+        - dev
+        - release
+      default: 0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where did you encounter this issue?
+      options:
+        - Local Machine
+        - Docker
+        - GitHub Actions Workflow
+        - MySQL Database
+        - Other
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on? (If web-related)
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste any relevant logs here. This will be auto-formatted.
+      render: shell
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the exact steps so we can reproduce the issue.
+      placeholder: |
+        1. Go to ...
+        2. Run the command ...
+        3. Click ...
+        4. Error appears.
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (Optional)
+      description: If applicable, upload screenshots to help explain the issue.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our project's Code of Conduct.
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
