@@ -4,91 +4,79 @@ import java.sql.*;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- * Population Reporting CLI
- * ------------------------
- * What this program does:
- * - Connects to a MySQL database (the classic "world" sample DB) using JDBC.
- * - Runs a set of 20+ pre-defined reports (countries, cities, capitals, populations, languages).
- * - Prints each result as a nicely formatted ASCII/Unicode table to the console.
- *
- * How to run (examples):
- * 1) From your IDE (IntelliJ):
- *    - Set environment variables in your Run Configuration (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD).
- *    - Run the 'main' method.
- *
- * 2) From command line (JAR already built):
- *    DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=world DB_USER=app DB_PASSWORD=app123 \
- *    java -jar app.jar
- *
- * Docker/Compose tip:
- * - If Java runs in a container on the same Docker network as MySQL:
- *   DB_HOST should usually be the *service/container name* (e.g., "db") not 127.0.0.1.
- * - If Java runs on your Windows/macOS host and MySQL is in Docker with "-p 3306:3306":
- *   DB_HOST=127.0.0.1 and DB_PORT=3306 (or whatever host port you mapped).
- *
- * Pretty tables:
- * - By default we render ASCII borders. Set TABLE_ASCII=0 to use Unicode box-drawing characters.
- *
- * Troubleshooting:
- * - "Communications link failure" or "Connection refused": check host/port, container health, network.
- * - "Access denied": check DB_USER/DB_PASSWORD.
- * - "Unknown database 'world'": confirm DB_NAME and that the schema exists.
- * - SQL syntax errors: double-check the text blocks (""" ... """) and column names for your dataset.
- */
 public class App {
+    private static final Logger log = Logger.getLogger(App.class.getName());
+    static {
+        // Set logger level to FINE (prints FINE, INFO, WARNING, SEVERE)
+        log.setLevel(Level.FINE);
 
+        // Configure root logger's handlers (e.g., ConsoleHandler)
+        Logger rootLogger = Logger.getLogger("");
+        for (var handler : rootLogger.getHandlers()) {
+            handler.setLevel(Level.FINE);
+
+            // Optional: simple formatter for cleaner output
+            handler.setFormatter(new java.util.logging.SimpleFormatter() {
+                private static final String format = "%4$s: %5$s%n";
+                @Override
+                public synchronized String format(java.util.logging.LogRecord lr) {
+                    return String.format(format,
+                            lr.getSourceClassName(),
+                            lr.getLoggerName(),
+                            lr.getLevel().getLocalizedName(),
+                            lr.getLevel().getName(),
+                            lr.getMessage()
+                    );
+                }
+            });
+        }
+    }
+    public int add(int a, int b) {
+        return a + b;
+    }
     // ---------- env & connection ----------
-
-    /**
-     * Reads an environment variable with a fallback default when not set/blank.
-     * This keeps the program configurable without hard-coding connection details.
-     */
     private static String env(String key, String def) {
+
         String v = System.getenv(key);
         return (v == null || v.isBlank()) ? def : v;
     }
 
-    /**
-     * Tries to connect to MySQL several times with a delay between attempts.
-     * Useful when the DB container takes a few seconds to become "ready".
-     *
-     * @param url      JDBC URL
-     * @param user     DB username
-     * @param pass     DB password
-     * @param attempts number of tries before giving up
-     * @param wait     delay between tries (e.g., 3 seconds)
-     * @return a live JDBC Connection
-     */
-    private static Connection connectWithRetry(String url, String user, String pass,
-                                               int attempts, Duration wait) throws Exception {
+    // Example changes inside Appp
+
+    static Connection connectWithRetry(String url, String user, String pass,
+                                       int attempts, Duration wait) throws Exception {
+        if (url.startsWith("test://fail")) {
+            throw new SQLException("Simulated failure for unit test");
+        }
+
         SQLException last = null;
         for (int i = 1; i <= attempts; i++) {
             try {
-                System.out.printf("Connecting (attempt %d/%d)...%n", i, attempts);
+                if (log.isLoggable(Level.INFO)) {
+                    int finalI = i;
+                    log.info(() -> String.format("Connecting (attempt %d/%d)...", finalI, attempts));
+                }
                 return DriverManager.getConnection(url, user, pass);
             } catch (SQLException e) {
                 last = e;
-                // Common when DB is still starting; we sleep and try again.
-                System.out.println("Not ready yet: " + e.getMessage());
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning(() -> "Not ready yet: " + e.getMessage());
+                }
                 Thread.sleep(wait.toMillis());
             }
         }
-        // After all retries, surface the last error.
         throw last;
     }
 
-    // ---------- table rendering ----------
-    // We print results in a grid. You can switch ASCII vs. Unicode borders using TABLE_ASCII env var.
 
+    // ---------- table rendering ----------
     // ASCII by default. Set TABLE_ASCII=0 to use Unicode borders.
     private static final boolean ASCII = !"0".equals(System.getenv("TABLE_ASCII"));
 
-    /**
-     * Small holder for all the border characters we need to draw a table.
-     * Keeps the printing logic clean and swappable (ASCII vs. Unicode).
-     */
+
     private static class Borders {
         final String TL, TR, BL, BR, H, V, TJ, X, BJ, LT, RT;
         Borders(boolean ascii) {
@@ -107,15 +95,12 @@ public class App {
     }
     private static final Borders B = new Borders(ASCII);
 
-    /**
-     * Prints a full table with a title, a header row, and all data rows.
-     * Right-align is applied to numeric columns to improve readability.
-     */
     private static void printTable(String title, String[] headers, List<String[]> rows, boolean[] rightAlign) {
-        System.out.println();
-        System.out.println(title);  // e.g., "32. Population by language (...)"
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> "\n" + title);
+        }
 
-        // 1) Compute column widths based on header + data cell lengths.
+        // widths
         int cols = headers.length;
         int[] w = new int[cols];
         for (int c = 0; c < cols; c++) w[c] = headers[c].length();
@@ -123,41 +108,40 @@ public class App {
             for (int c = 0; c < cols; c++)
                 w[c] = Math.max(w[c], r[c] == null ? 0 : r[c].length());
 
-        // 2) Prebuild top/middle/bottom rules using the chosen border style.
+        // lines
         String top = line(B.TL, B.TJ, B.TR, w);
         String mid = line(B.LT, B.X , B.RT, w);
         String bot = line(B.BL, B.BJ, B.BR, w);
 
-        // 3) Render the grid.
-        System.out.println(top);
-        System.out.println(row(headers, w, new boolean[cols])); // header left aligned
-        System.out.println(mid);
-        for (int r = 0; r < rows.size(); r++) {
-            System.out.println(row(rows.get(r), w, rightAlign));
-            // Draw a rule after every row (classic grid look).
-            System.out.println(r == rows.size() - 1 ? bot : mid);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> top);
+            log.info(() -> row(headers, w, new boolean[cols])); // header
+            log.info(() -> mid);
+            for (int r = 0; r < rows.size(); r++) {
+                int rowIndex = r;
+                log.info(() -> row(rows.get(rowIndex), w, rightAlign));
+                log.info(() -> rowIndex == rows.size() - 1 ? bot : mid);
+            }
+            if (rows.isEmpty()) log.info(() -> bot);
         }
-        if (rows.isEmpty()) System.out.println(bot);
     }
 
-    /** Builds a horizontal rule like ┌────┬────┐ based on column widths. */
+
     private static String line(String left, String join, String right, int[] w) {
         StringBuilder sb = new StringBuilder(left);
         for (int i = 0; i < w.length; i++) {
-            sb.append(B.H.repeat(w[i] + 2)); // +2 for padding spaces around content
+            sb.append(B.H.repeat(w[i] + 2));
             sb.append(i == w.length - 1 ? right : join);
         }
         return sb.toString();
     }
 
-    /** Builds a single data row with left/right alignment per column. */
     private static String row(String[] cells, int[] w, boolean[] rightAlign) {
         StringBuilder sb = new StringBuilder(B.V);
         for (int i = 0; i < w.length; i++) {
             String cell = cells[i] == null ? "" : cells[i];
             int pad = w[i] - cell.length();
             if (rightAlign != null && rightAlign[i]) {
-                // Numbers look better right-aligned (units line up)
                 sb.append(" ").append(" ".repeat(pad)).append(cell).append(" ");
             } else {
                 sb.append(" ").append(cell).append(" ".repeat(pad)).append(" ");
@@ -167,26 +151,15 @@ public class App {
         return sb.toString();
     }
 
-    /**
-     * Executes a SQL query, auto-detects which columns are numeric,
-     * formats numbers (no grouping, up to 2 decimals), collects rows,
-     * and then prints them as a formatted table.
-     *
-     * @param con    live DB connection
-     * @param title  printed above the table
-     * @param sql    SQL text (uses Java text blocks for readability)
-     * @param cols   the list/order of columns to display (by label)
-     */
-    private static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
+    static void runQuery(Connection con, String title, String sql, String... cols) throws SQLException {
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            // Map column labels -> index for quick access
             ResultSetMetaData md = rs.getMetaData();
             Map<String,Integer> idx = new HashMap<>();
             for (int i = 1; i <= md.getColumnCount(); i++) idx.put(md.getColumnLabel(i), i);
 
-            // --- number formats: NO thousand separators, 0-2 decimals for floating types ---
+            // --- formats: NO grouping (no commas), up to 2 decimals ---
             NumberFormat intFmt = NumberFormat.getIntegerInstance(Locale.US);
             intFmt.setGroupingUsed(false);
             NumberFormat decFmt = NumberFormat.getNumberInstance(Locale.US);
@@ -194,11 +167,10 @@ public class App {
             decFmt.setMinimumFractionDigits(0);
             decFmt.setMaximumFractionDigits(2);
 
-            // Detect numeric columns from JDBC types to align/format properly.
             boolean[] right = new boolean[cols.length];
             boolean[] isDecimal = new boolean[cols.length];
             for (int i = 0; i < cols.length; i++) {
-                int jdbcType = Types.VARCHAR; // default assume string
+                int jdbcType = Types.VARCHAR;
                 Integer pos = idx.get(cols[i]);
                 if (pos != null) jdbcType = md.getColumnType(pos);
                 switch (jdbcType) {
@@ -208,67 +180,91 @@ public class App {
                 }
             }
 
-            // Read all rows, convert to strings with proper number formatting.
             List<String[]> rows = new ArrayList<>();
             while (rs.next()) {
                 String[] r = new String[cols.length];
                 for (int c = 0; c < cols.length; c++) {
                     Object val = rs.getObject(cols[c]);
-                    if (val == null) {
-                        r[c] = "";
-                    } else if (right[c] && val instanceof Number n) {
+                    if (val == null) r[c] = "";
+                    else if (right[c] && val instanceof Number n)
                         r[c] = isDecimal[c] ? decFmt.format(n.doubleValue())
                                 : intFmt.format(n.longValue());
-                    } else {
-                        r[c] = String.valueOf(val);
-                    }
+                    else r[c] = String.valueOf(val);
                 }
                 rows.add(r);
             }
 
-            // Finally print the table for this query.
             printTable(title, cols, rows, right);
         }
     }
 
     // ---------- main ----------
+    // ---------- main ----------
+    // ---------- helpers for argument parsing (easier to test) ----------
 
-    /**
-     * Entry point:
-     * - Reads DB connection info from env vars (with safe defaults).
-     * - Establishes a JDBC connection (with retry to handle cold starts).
-     * - Runs each report in a clear section order.
-     */
+    /** Resolve host and port from command-line args or environment variables. */
+    static String[] resolveHostPort(String[] args) {
+        String host;
+        String port;
+
+        if (args.length >= 1) {
+            String[] hp = args[0].split(":");
+            host = hp[0];
+            port = hp.length > 1 ? hp[1] : "3306";
+        } else {
+            host = env("DB_HOST", "127.0.0.1");
+            port = env("DB_PORT", "3306");
+        }
+        return new String[]{host, port};
+    }
+
+    /** Resolve timeout in milliseconds from args (default 30000). */
+    static int resolveTimeoutMs(String[] args) {
+        if (args.length >= 2) {
+            return Integer.parseInt(args[1]);
+        }
+        return 30000;
+    }
+
     public static void main(String[] args) {
-        // Tip: override these via environment variables rather than editing code.
-        String host = env("DB_HOST", "127.0.0.1");   // in compose network, often "db"
-        String port = env("DB_PORT", "3306");
+        // Use small helper methods so we can unit-test all branches
+        String[] hp = resolveHostPort(args);
+        String host = hp[0];
+        String port = hp[1];
+
+        int timeoutMs = resolveTimeoutMs(args);
+
+
         String db   = env("DB_NAME", "world");
         String user = env("DB_USER", "app");
         String pass = env("DB_PASSWORD", "app123");
 
-        // AllowPublicKeyRetrieval = handy for MySQL 8+ with caching_sha2_password.
         String url = String.format(
                 "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 host, port, db
         );
-        System.out.printf("DB -> %s  user=%s%n", url, user);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> String.format("DB -> %s  user=%s  timeout=%dms%n", url, user, timeoutMs));
+        }
+
 
         try {
-            // Explicitly load the MySQL driver (many runtimes do this automatically).
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Retry helps when DB container is still starting up.
-            try (Connection con = connectWithRetry(url, user, pass, 12, Duration.ofSeconds(3))) {
-                System.out.println(" Connected!");
+            int attempts = 12;
+            Duration wait = Duration.ofMillis(timeoutMs / attempts);
+
+            try (Connection con = connectWithRetry(url, user, pass, attempts, wait)) {
+
+                log.info(" Connected!");
 
                 // ----------------- section titles + the 21 reports -----------------
 
-                System.out.println("\n======================");
-                System.out.println("Country Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Country Reports");
+                log.info("======================");
 
-                // 1) All countries in the world by population (desc)
+                // 1
                 runQuery(con, "1. All Countries by Population (World)",
                         """
                         SELECT Code, Name, Continent, Region, Population, Capital
@@ -277,7 +273,7 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
-                // 2) Filter by Continent
+                // 2
                 runQuery(con, "2. Countries by Population (Continent = Asia)",
                         """
                         SELECT Code, Name, Continent, Region, Population, Capital
@@ -287,7 +283,7 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
-                // 3) Filter by Region
+                // 3
                 runQuery(con, "3. Countries by Population (Region = Caribbean)",
                         """
                         SELECT Code, Name, Continent, Region, Population, Capital
@@ -297,12 +293,44 @@ public class App {
                         """,
                         "Code","Name","Continent","Region","Population","Capital");
 
+                // 4
+                runQuery(con, "4. Top 10 Countries (World)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
 
-                System.out.println("\n======================");
-                System.out.println("City Reports");
-                System.out.println("======================");
+                // 5
+                runQuery(con, "5. Top 10 Countries (Continent = Europe)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Continent = 'Europe'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
 
-                // 7) All cities (left join so countries with nulls still show)
+                // 6
+                runQuery(con, "6. Top 10 Countries (Region = Western Europe)",
+                        """
+                        SELECT Code, Name, Continent, Region, Population, Capital
+                        FROM country
+                        WHERE Region = 'Western Europe'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Code","Name","Continent","Region","Population","Capital");
+
+
+                log.info("\n======================");
+                log.info("City Reports");
+                log.info("======================");
+
+                // 7
                 runQuery(con, "7. All cities in world",
                         """
                         SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
@@ -312,7 +340,7 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
-                // 8) Cities filtered by continent
+                // 8
                 runQuery(con, "8. Cities by continent (Africa)",
                         """
                         SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
@@ -323,7 +351,7 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
-                // 9) Cities filtered by region
+                // 9
                 runQuery(con, "9. Cities by region (Central Africa)",
                         """
                         SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
@@ -334,7 +362,7 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
-                // 10) Cities filtered by country
+                // 10
                 runQuery(con, "10. Cities by country (Argentina)",
                         """
                         SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
@@ -345,7 +373,7 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
-                // 11) Cities filtered by district
+                // 11
                 runQuery(con, "11. Cities by district (Limburg)",
                         """
                         SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
@@ -356,12 +384,71 @@ public class App {
                         """,
                         "Name","Country","District","Population");
 
+                // 12
+                runQuery(con, "12. Top 10 cities in world",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
 
-                System.out.println("\n======================");
-                System.out.println("Capital City Reports");
-                System.out.println("======================");
+                // 13
+                runQuery(con, "13. Top 10 cities by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Continent = 'Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
 
-                // 17) All capital cities (inner join via country.Capital -> city.ID)
+                // 14
+                runQuery(con, "14. Top 10 cities by region (Central Africa)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Region = 'Central Africa'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 15
+                runQuery(con, "15. Top 10 cities by country (Argentina)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE c.Name = 'Argentina'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+                // 16
+                runQuery(con, "16. Top 10 cities by district (Limburg)",
+                        """
+                        SELECT ci.Name AS Name, c.Name AS Country, ci.District AS District, ci.Population AS Population
+                        FROM city ci
+                        LEFT JOIN country c ON ci.CountryCode = c.Code
+                        WHERE ci.District = 'Limburg'
+                        ORDER BY Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","District","Population");
+
+
+                log.info("\n======================");
+                log.info("Capital City Reports");
+                log.info("======================");
+
+                // 17
                 runQuery(con, "17. All capital cities",
                         """
                         SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
@@ -371,7 +458,7 @@ public class App {
                         """,
                         "Name","Country","Population");
 
-                // 18) Capital cities filtered by Continent
+                // 18
                 runQuery(con, "18. Capitals by continent (Asia)",
                         """
                         SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
@@ -382,7 +469,7 @@ public class App {
                         """,
                         "Name","Country","Population");
 
-                // 19) Capital cities filtered by Region
+                // 19
                 runQuery(con, "19. Capitals by region (Eastern Asia)",
                         """
                         SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
@@ -393,15 +480,47 @@ public class App {
                         """,
                         "Name","Country","Population");
 
+                // 20
+                runQuery(con, "20. Top 10 capitals in world",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
 
-                System.out.println("\n======================");
-                System.out.println("Population Distribution and Population by Location");
-                System.out.println("======================");
+                // 21
+                runQuery(con, "21. Top 10 capitals by continent (Africa)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Continent = 'Africa'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
 
-                // 23) Population distribution by Continent:
-                //     - Total population
-                //     - % living in cities (sum of city pops / total)
-                //     - % not living in cities (complement)
+                // 22
+                runQuery(con, "22. Top 10 capitals by region (Western Europe)",
+                        """
+                        SELECT ci.Name AS Name, co.Name AS Country, ci.Population AS Population
+                        FROM city ci
+                        INNER JOIN country co ON ci.ID = co.Capital
+                        WHERE co.Region = 'Western Europe'
+                        ORDER BY ci.Population DESC
+                        LIMIT 10
+                        """,
+                        "Name","Country","Population");
+
+
+                log.info("\n======================");
+                log.info("Population Distribution and Population by Location");
+                log.info("======================");
+
+                // 23
                 runQuery(con, "23. Population Report (Continent)",
                         """
                         SELECT
@@ -420,7 +539,7 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 24) Same logic by Region
+                // 24
                 runQuery(con, "24. Population Report (Region)",
                         """
                         SELECT
@@ -439,7 +558,7 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 25) Same logic per Country
+                // 25
                 runQuery(con, "25. Population Report (Country)",
                         """
                         SELECT
@@ -454,7 +573,7 @@ public class App {
                         """,
                         "Country","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 26) One-number report: total world population
+                // 26
                 runQuery(con, "26. World population",
                         """
                         SELECT SUM(Population) AS total_world_population
@@ -462,7 +581,7 @@ public class App {
                         """,
                         "total_world_population");
 
-                // 27) Drill into a single continent (Africa)
+                // 27
                 runQuery(con, "27. Continent population (Africa)",
                         """
                         SELECT
@@ -482,7 +601,7 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 28) Drill into a single region (Central Africa)
+                // 28
                 runQuery(con, "28. Region population (Central Africa)",
                         """
                         SELECT
@@ -502,7 +621,7 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 29) Drill into a single country (Spain)
+                // 29
                 runQuery(con, "29. Country population (Spain)",
                         """
                         SELECT
@@ -522,7 +641,7 @@ public class App {
                         """,
                         "Name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 30) District-level breakdown (example: Limburg)
+                // 30
                 runQuery(con, "30. District population (Limburg)",
                         """
                         SELECT
@@ -542,7 +661,7 @@ public class App {
                         """,
                         "District","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                // 31) Single city report (example: London)
+                // 31
                 runQuery(con, "31. City population (London)",
                         """
                         SELECT
@@ -562,12 +681,11 @@ public class App {
                         """,
                         "city_name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                System.out.println("\n======================");
-                System.out.println("Language Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Language Reports");
+                log.info("======================");
 
-                // 32) People counts by language and percentage of world population
-                //     Note: Uses ROUND with default half-up rounding; adjust as needed.
+                // 32
                 runQuery(con, "32. Population by language (Chinese, English, Hindi, Spanish, Arabic)",
                         """
                         SELECT
@@ -586,9 +704,9 @@ public class App {
                         "Language","Num_of_people","Percent_of_world");
             }
         } catch (Exception e) {
-            // We print a friendly error + full stack trace for debugging.
-            System.err.println(" Error: " + e.getMessage());
-            e.printStackTrace();
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe(() -> String.format("Error: " + e.getMessage(), e));
+            }
             System.exit(1);
         }
     }
