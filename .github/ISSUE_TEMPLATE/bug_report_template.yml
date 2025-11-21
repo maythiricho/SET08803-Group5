@@ -1,9 +1,14 @@
-name: Bug Report2
+name: Bug Report Template For Our Project
 description: File a bug report for the SET08803-Group5 project.
 title: "[Bug]: "
 labels: ["bug", "triage"]
 assignees:
   - maythiricho
+  - phyozawaung005
+  - KyawZayarMin1234
+  - Segma-tech
+  - Rayyy990
+  - heinhtetlin810
 body:
   - type: markdown
     attributes:
@@ -35,8 +40,8 @@ body:
       label: Project Version
       description: Which version or branch of the project are you using?
       options:
-        - main (Default)
-        - dev
+        - master (Default)
+        - develop
         - release
       default: 0
     validations:
