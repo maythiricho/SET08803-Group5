@@ -4,16 +4,47 @@ import java.sql.*;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class App {
+    private static final Logger log = Logger.getLogger(App.class.getName());
+    static {
+        // Set logger level to FINE (prints FINE, INFO, WARNING, SEVERE)
+        log.setLevel(Level.FINE);
+
+        // Configure root logger's handlers (e.g., ConsoleHandler)
+        Logger rootLogger = Logger.getLogger("");
+        for (var handler : rootLogger.getHandlers()) {
+            handler.setLevel(Level.FINE);
+
+            // Optional: simple formatter for cleaner output
+            handler.setFormatter(new java.util.logging.SimpleFormatter() {
+                private static final String format = "%4$s: %5$s%n";
+                @Override
+                public synchronized String format(java.util.logging.LogRecord lr) {
+                    return String.format(format,
+                            lr.getSourceClassName(),
+                            lr.getLoggerName(),
+                            lr.getLevel().getLocalizedName(),
+                            lr.getLevel().getName(),
+                            lr.getMessage()
+                    );
+                }
+            });
+        }
+    }
     public int add(int a, int b) {
         return a + b;
     }
     // ---------- env & connection ----------
     private static String env(String key, String def) {
+
         String v = System.getenv(key);
         return (v == null || v.isBlank()) ? def : v;
     }
+
+    // Example changes inside Appp
 
     static Connection connectWithRetry(String url, String user, String pass,
                                        int attempts, Duration wait) throws Exception {
@@ -24,16 +55,22 @@ public class App {
         SQLException last = null;
         for (int i = 1; i <= attempts; i++) {
             try {
-                System.out.printf("Connecting (attempt %d/%d)...%n", i, attempts);
+                if (log.isLoggable(Level.INFO)) {
+                    int finalI = i;
+                    log.info(() -> String.format("Connecting (attempt %d/%d)...", finalI, attempts));
+                }
                 return DriverManager.getConnection(url, user, pass);
             } catch (SQLException e) {
                 last = e;
-                System.out.println("Not ready yet: " + e.getMessage());
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning(() -> "Not ready yet: " + e.getMessage());
+                }
                 Thread.sleep(wait.toMillis());
             }
         }
         throw last;
     }
+
 
     // ---------- table rendering ----------
     // ASCII by default. Set TABLE_ASCII=0 to use Unicode borders.
@@ -59,8 +96,9 @@ public class App {
     private static final Borders B = new Borders(ASCII);
 
     private static void printTable(String title, String[] headers, List<String[]> rows, boolean[] rightAlign) {
-        System.out.println();
-        System.out.println(title);  // e.g., "32. Population by language (...)"
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> "\n" + title);
+        }
 
         // widths
         int cols = headers.length;
@@ -75,17 +113,19 @@ public class App {
         String mid = line(B.LT, B.X , B.RT, w);
         String bot = line(B.BL, B.BJ, B.BR, w);
 
-        // render grid
-        System.out.println(top);
-        System.out.println(row(headers, w, new boolean[cols])); // header left aligned
-        System.out.println(mid);
-        for (int r = 0; r < rows.size(); r++) {
-            System.out.println(row(rows.get(r), w, rightAlign));
-            // horizontal rule after every row (grid look)
-            System.out.println(r == rows.size() - 1 ? bot : mid);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> top);
+            log.info(() -> row(headers, w, new boolean[cols])); // header
+            log.info(() -> mid);
+            for (int r = 0; r < rows.size(); r++) {
+                int rowIndex = r;
+                log.info(() -> row(rows.get(rowIndex), w, rightAlign));
+                log.info(() -> rowIndex == rows.size() - 1 ? bot : mid);
+            }
+            if (rows.isEmpty()) log.info(() -> bot);
         }
-        if (rows.isEmpty()) System.out.println(bot);
     }
+
 
     private static String line(String left, String join, String right, int[] w) {
         StringBuilder sb = new StringBuilder(left);
@@ -203,7 +243,10 @@ public class App {
                 "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 host, port, db
         );
-        System.out.printf("DB -> %s  user=%s  timeout=%dms%n", url, user, timeoutMs);
+        if (log.isLoggable(Level.INFO)) {
+            log.info(() -> String.format("DB -> %s  user=%s  timeout=%dms%n", url, user, timeoutMs));
+        }
+
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -213,13 +256,13 @@ public class App {
 
             try (Connection con = connectWithRetry(url, user, pass, attempts, wait)) {
 
-                System.out.println(" Connected!");
+                log.info(" Connected!");
 
                 // ----------------- section titles + the 21 reports -----------------
 
-                System.out.println("\n======================");
-                System.out.println("Country Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Country Reports");
+                log.info("======================");
 
                 // 1
                 runQuery(con, "1. All Countries by Population (World)",
@@ -283,9 +326,9 @@ public class App {
                         "Code","Name","Continent","Region","Population","Capital");
 
 
-                System.out.println("\n======================");
-                System.out.println("City Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("City Reports");
+                log.info("======================");
 
                 // 7
                 runQuery(con, "7. All cities in world",
@@ -401,9 +444,9 @@ public class App {
                         "Name","Country","District","Population");
 
 
-                System.out.println("\n======================");
-                System.out.println("Capital City Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Capital City Reports");
+                log.info("======================");
 
                 // 17
                 runQuery(con, "17. All capital cities",
@@ -473,9 +516,9 @@ public class App {
                         "Name","Country","Population");
 
 
-                System.out.println("\n======================");
-                System.out.println("Population Distribution and Population by Location");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Population Distribution and Population by Location");
+                log.info("======================");
 
                 // 23
                 runQuery(con, "23. Population Report (Continent)",
@@ -638,9 +681,9 @@ public class App {
                         """,
                         "city_name","Total Population","Population in Cities (%)","Population not in Cities (%)");
 
-                System.out.println("\n======================");
-                System.out.println("Language Reports");
-                System.out.println("======================");
+                log.info("\n======================");
+                log.info("Language Reports");
+                log.info("======================");
 
                 // 32
                 runQuery(con, "32. Population by language (Chinese, English, Hindi, Spanish, Arabic)",
@@ -661,8 +704,9 @@ public class App {
                         "Language","Num_of_people","Percent_of_world");
             }
         } catch (Exception e) {
-            System.err.println(" Error: " + e.getMessage());
-            e.printStackTrace();
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe(() -> String.format("Error: " + e.getMessage(), e));
+            }
             System.exit(1);
         }
     }
