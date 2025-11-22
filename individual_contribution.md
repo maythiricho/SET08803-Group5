@@ -1,4 +1,4 @@
-# Group 5
+# Group 5 (Individual Contribution)
 | Matric    | Code Review 1 | Code Review 2 |
 |-----------|----------------|----------------|
 | 40794436  | 16.6           | 20             |
