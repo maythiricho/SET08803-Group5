@@ -88,6 +88,44 @@ Current Release: Latest
 
 ---
 
+## Details the Requirements Met
+| ID | Name                                                             | Met | Screenshot                                          |
+|----|------------------------------------------------------------------|-----|-----------------------------------------------------|
+| 1  | All Countries by Population (World)                              | Yes | ![](images/World-populatoin Report 1.png)           |
+| 2  | Countries by Population (Contient = Asia)                        | Yes | ![](images/World-populatoin Report 2.png)           |
+| 3  | Countries by Population (Region = Carbbean)                      | Yes | ![](images/World-populatoin Report 3.png)           |
+| 4  | Top N Countries (World)                                          | Yes | ![](images/World-populatoin Report 4.png)           |
+| 5  | Top N Countries (Continent = Europe)                             | Yes | ![](images/World-populatoin Report 5.png)           |
+| 6  | Top N Countries (Region = Western Europe)                        | Yes | ![](images/World-populatoin Report 6.png)           |
+| 7  | All Cities In World                                              | Yes | ![](images/World-populatoin Report 7.png)           |
+| 8  | Cities By continent (Africa)                                     | Yes | ![](images/World-populatoin Report 8.png)           |
+| 9  | Cities By Region (Central Africa)                                | Yes | ![](images/World-populatoin Report 9.png)           |
+| 10 | Cities By Country (Argentina)                                    | Yes | ![](images/World-populatoin Report 10.png)          |
+| 11 | Cities By District (Limburg)                                     | Yes | ![](images/World-populatoin Report 11 and 12.png)   |
+| 12 | Top 10 Cities In World                                           | Yes | ![](images/World-populatoin Report 11 and 12.png)   |
+| 13 | Top 10 Cities By Continent (Africa)                              | Yes | ![](images/World-populatoin Report 13.png)          |
+| 14 | Top 10 Cities By Region (Central Africa)                         | Yes | ![](images/World-populatoin Report 14.png)          |
+| 15 | Top 10 Cities By Country (Argentina)                             | Yes | ![](images/World-populatoin Report 15.png)          |
+| 16 | Top 10 Cities By District (Limburg)                              | Yes | ![](images/World-populatoin Report 16.png)          |
+| 17 | All Capital Cities                                               | Yes | ![](images/World-populatoin Report 17.png)          |
+| 18 | Capitals By Continent (Asia)                                     | Yes | ![](images/World-populatoin Report 18.png)          |
+| 19 | Capitals By Region (Eastern Asia)                                | Yes | ![](images/World-populatoin Report 19.png)          |
+| 20 | Top 10 Capitals in world                                         | Yes | ![](images/World-populatoin Report 20.png)          |
+| 21 | Top 10 Capitals By Continent (Africa)                            | Yes | ![](images/World-populatoin Report 21.png)          |
+| 22 | Top 10 Capitals By Region (Western Europe)                       | Yes | ![](images/World-populatoin Report 22.png)          |
+| 23 | Population Report (Continent)                                    | Yes | ![](images/World-populatoin Report 23.png)          |
+| 24 | Population Report (Region)                                       | Yes | ![](images/World-populatoin Report 24.png)          |
+| 25 | Population Report (Country)                                      | Yes | ![](images/World-populatoin Report 25.png)          |
+| 26 | World Population                                                 | Yes | ![](images/World-populatoin Report 26,27 and 28.png) |
+| 27 | Continent Population (Africa)                                    | Yes | ![](images/World-populatoin Report 26,27 and 28.png) |
+| 28 | Region Population (Central Africa)                               | Yes | ![](images/World-populatoin Report 26,27 and 28.png) |
+| 29 | Country Population (Spain)                                       | Yes | ![](images/World-populatoin Report 29,30,and31.png) |
+| 30 | District Population (Limburg)                                    | Yes | ![](images/World-populatoin Report 29,30,and31.png) |
+| 31 | City Population (London)                                         | Yes | ![](images/World-populatoin Report 29,30,and31.png) |
+| 32 | Poplation By Language (Chinese, English, Hindi, Spanish, Arabic) | Yes | ![](images/World-populatoin Report 32.png)          |
+
+---
+
 ## Contact
 If you have questions regarding this coursework:
 
