@@ -78,12 +78,14 @@ You can view the full [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## License
 This project is licensed under the MIT License.  
+
 [View License](./LICENSE)
 
 ---
 
 ## Version
-Current Release: Latest 
+Current Release: Latest
+
 [View all releases](https://github.com/maythiricho/SET08803-Group5/releases)
 
 ---
