@@ -105,5 +105,3 @@ rectangle "Population Reporting System" as PRS {
   end note
 }
 @enduml
-
-
