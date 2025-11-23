@@ -88,7 +88,7 @@ Current Release: Latest
 
 ---
 
-## Details the Requirements Met
+## Proof of Assessment's requirement Table
 | ID | Name                                                             | Met | Screenshot |
 |----|------------------------------------------------------------------|-----|------------|
 | 1  | All Countries by Population (World)                              | Yes | ![](Images/World-populatoin%20Report%201.png) |
