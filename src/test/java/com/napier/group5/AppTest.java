@@ -160,7 +160,7 @@ public class AppTest {
         assertEquals("|   7 |    42 |", row);
     }
 
-    // ---------- connectWithRetry() failure path test ----------
+    // ---------- connectWithRetry() failure path test ----------2.
 
     @Test
     @DisplayName("connectWithRetry() throws after failed attempt with bad URL")

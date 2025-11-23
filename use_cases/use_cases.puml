@@ -1,109 +1,68 @@
 @startuml
-' -------- Fit & routing (square page, single sheet) --------
 left to right direction
-skinparam dpi 300
-scale 3000*3000
-page 1x1
-skinparam linetype ortho
-skinparam ranksep 24
-skinparam nodesep 18
-skinparam ArrowThickness 1
-skinparam ArrowColor #555
-' -----------------------------------------------------------
-
 skinparam packageStyle rectangle
 skinparam shadowing false
-skinparam defaultFontSize 12
 skinparam usecase {
-  BorderColor #666
-  BackgroundColor #F8F8F8
+  BorderColor #777
+  BackgroundColor #F9F9F9
 }
+skinparam note {
+  BackgroundColor #FFFBEA
+  BorderColor #C9B458
+}
+skinparam defaultFontSize 12
 
-actor "Data Analyst"
+actor User
 
 rectangle "Population Reporting System" as PRS {
+  ' High-level menus (simple and clear)
+  usecase "<<menu>>\nCountry Reports" as VCR
+  usecase "<<menu>>\nCity Reports" as VCiR
+  usecase "<<menu>>\nCapital City Reports" as VCCR
+  usecase "<<menu>>\nPopulation Distribution" as VPDR
+  usecase "<<menu>>\nPopulation by Location" as VPBL
+  usecase "<<menu>>\nLanguage Reports" as VLR
 
+  User --> VCR
+  User --> VCiR
+  User --> VCCR
+  User --> VPDR
+  User --> VPBL
+  User --> VLR
 
+  ' Small notes with UC ranges (no crowded details)
+  note right of VCR
+    UC1–UC6
+    • All countries / by continent / region
+    • Top N (world/continent/region)
+  end note
 
-  ' ---------- Menus ----------
-  usecase "Country Reports" as VCR
-  usecase "City Reports" as VCiR
-  usecase "Capital City Reports" as VCCR
-  usecase "Population Distribution" as VPDR
-  usecase "Population by Location" as VPBL
-  usecase "Language Reports" as VLR
+  note right of VCiR
+    UC7–UC16
+    • All cities / by continent / region / country / district
+    • Top N variants
+  end note
 
-  "Data Analyst" --> VCR
-  "Data Analyst" --> VCiR
-  "Data Analyst" --> VCCR
-  "Data Analyst" --> VPDR
-  "Data Analyst" --> VPBL
-  "Data Analyst" --> VLR
+  note right of VCCR
+    UC17–UC22
+    • All capital cities / by continent / region
+    • Top N variants
+  end note
 
-  ' ---------- 1) Country ----------
-  package "Country (UC1–UC6)" as P1 {
-    usecase "All Countries by Population" as UC1
-    usecase "Top N Countries (World)" as UC4
-    usecase "… more (by Continent / Region)" as UCMORE1
-  }
-  VCR .> UC1 : <<include>>
-  VCR .> UC4 : <<include>>
-  VCR .> UCMORE1
-  VCR -[hidden]-> UC1
+  note right of VPDR
+    UC23–UC25
+    • Distribution by continent / region / country
+  end note
 
-  ' ---------- 2) City ----------
-  package "City (UC7–UC16)" as P2 {
-    usecase "All Cities by Population" as UC7
-    usecase "Top N Cities (Country)" as UC15
-    usecase "… more (Continent / Region / District)" as UCMORE2
-  }
-  VCiR .> UC7
-  VCiR .> UC15
-  VCiR .> UCMORE2
-  VCiR -[hidden]-> UC7
+  note right of VPBL
+    UC26–UC31
+    • Totals for world / continent / region
+    • country / district / city
+  end note
 
-  ' ---------- 3) Capital City ----------
-  package "Capital City (UC17–UC22)" as P3 {
-    usecase "All Capital Cities (World)" as UC17
-    usecase "Top N Capital Cities (Continent)" as UC21
-    usecase "… more (Region)" as UCMORE3
-  }
-  VCCR .> UC17
-  VCCR .> UC21
-  VCCR .> UCMORE3
-  VCCR -[hidden]-> UC17
-
-  ' ---------- 4) Population Distribution ----------
-  package "Distribution (UC23–UC25)" as P4 {
-    usecase "By Continent" as UC23
-    usecase "… more (Region / Country)" as UCMORE4
-  }
-  VPDR .> UC23
-  VPDR .> UCMORE4
-  VPDR -[hidden]-> UC23
-
-  ' ---------- 5) Totals ----------
-  package "Totals (UC26–UC31)" as P5 {
-    usecase "World Total" as UC26
-    usecase "… more (Continent / Region / Country / District / City)" as UCMORE5
-  }
-  VPBL .> UC26
-  VPBL .> UCMORE5
-  VPBL -[hidden]-> UC26
-
-  ' ---------- 6) Language ----------
-  package "Languages (UC32)" as P6 {
-    usecase "Top Languages (speakers & %)" as UC32
-  }
-  VLR .> UC32
-  VLR -[hidden]-> UC32
-
-  note right of PRS
-    Keep it simple:
-    • Menus beside their groups
-    • Ortho lines, one square page
+  note right of VLR
+    UC32
+    • Top languages with speakers & % of world
   end note
 }
 @enduml
-
-
