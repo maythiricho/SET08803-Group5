@@ -281,6 +281,26 @@ public class AppIntegrationTest {
     }
 
     @Test
+    void runAllReportsProducesOutput() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Handler handler = new StreamHandler(baos, new SimpleFormatter());
+        logger.addHandler(handler);
+
+        App.main(new String[]{"localhost:3307", "60000"});
+
+        handler.flush();
+        String output = baos.toString();
+
+        assertTrue(output.contains("Country Reports"));
+        assertTrue(output.contains("City Reports"));
+        assertTrue(output.contains("Capital City Reports"));
+        assertTrue(output.contains("Language Reports"));
+        assertTrue(output.contains("32. Population by language"));
+
+        logger.removeHandler(handler);
+    }
+
+    @Test
     void emptyResultStillPrintsHeader() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Handler handler = new StreamHandler(baos, new SimpleFormatter());
@@ -342,7 +362,7 @@ public class AppIntegrationTest {
 
     @Test
     void tableTop5EuropeanCountriesByPopulation() throws Exception {
-        // SQL for Top 5 European countries, highest population firstt
+        // SQL for Top 5 European countries, highest population first
         String sql =
                 "SELECT Name, Population " +
                         "FROM country " +
