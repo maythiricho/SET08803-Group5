@@ -116,7 +116,7 @@ public class AppTest {
         assertEquals("default-value", value);
     }
 
-    // ---------- line() formatting tests ----------
+    // ---------- line() formatting tests ----------4.
 
     @Test
     @DisplayName("line() builds correct ASCII border for two columns")
