@@ -173,7 +173,7 @@ public class AppTest {
         });
     }
 
-    // ---------- demo output test (prints sample table) ----------.1.
+    // ---------- demo output test (prints sample table) ----------..1.
 
     @Test
     @DisplayName("Demo: prints sample world report table")
