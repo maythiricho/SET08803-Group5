@@ -106,7 +106,7 @@ public class AppTest {
         assertEquals(7, result);
     }
 
-    // ---------- env() tests ----------
+    // ---------- env() tests ----------5.
 
     @Test
     @DisplayName("env() returns default when variable is missing")
@@ -116,7 +116,7 @@ public class AppTest {
         assertEquals("default-value", value);
     }
 
-    // ---------- line() formatting tests ----------
+    // ---------- line() formatting tests ----------4.
 
     @Test
     @DisplayName("line() builds correct ASCII border for two columns")
@@ -132,7 +132,7 @@ public class AppTest {
         );
     }
 
-    // ---------- row() formatting tests ----------
+    // ---------- row() formatting tests ----------3.
 
     @Test
     @DisplayName("row() left-aligns text by default")
@@ -160,7 +160,7 @@ public class AppTest {
         assertEquals("|   7 |    42 |", row);
     }
 
-    // ---------- connectWithRetry() failure path test ----------
+    // ---------- connectWithRetry() failure path test ----------2.
 
     @Test
     @DisplayName("connectWithRetry() throws after failed attempt with bad URL")
@@ -173,7 +173,7 @@ public class AppTest {
         });
     }
 
-    // ---------- demo output test (prints sample table) ----------
+    // ---------- demo output test (prints sample table) ----------..1.
 
     @Test
     @DisplayName("Demo: prints sample world report table")
