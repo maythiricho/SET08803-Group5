@@ -11,16 +11,33 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test class for App.java
+ *
+ * ⚡ What this class tests:
+ *  - Basic object creation of App
+ *  - add() method behavior
+ *  - env(), line(), row(), printTable(), connectWithRetry() via reflection
+ *  - Table formatting correctness (left/right align)
+ *  - Error handling paths (connectWithRetry failure)
+ *
+ * These tests DO NOT require a real database.
+ * They only test pure logic and output formatting.
+ */
 public class AppTest {
 
-    // ---------- helpers for calling private static methods via reflection ----------
+    // -------------------------------------------------------------------------
+    // Helper methods for calling PRIVATE STATIC methods using reflection
+    // -------------------------------------------------------------------------
 
+    /** Call private env(String, String) */
     private String callEnv(String key, String def) throws Exception {
         Method m = App.class.getDeclaredMethod("env", String.class, String.class);
         m.setAccessible(true);
         return (String) m.invoke(null, key, def);
     }
 
+    /** Call private line(...) which renders ASCII/Unicode border lines */
     private String callLine(String left, String join, String right, int[] widths) throws Exception {
         Method m = App.class.getDeclaredMethod(
                 "line",
@@ -33,6 +50,7 @@ public class AppTest {
         return (String) m.invoke(null, left, join, right, widths);
     }
 
+    /** Call private row(...) which builds one row of a table */
     private String callRow(String[] cells, int[] widths, boolean[] rightAlign) throws Exception {
         Method m = App.class.getDeclaredMethod(
                 "row",
@@ -44,6 +62,7 @@ public class AppTest {
         return (String) m.invoke(null, (Object) cells, (Object) widths, (Object) rightAlign);
     }
 
+    /** Call private connectWithRetry(...) */
     private Connection callConnectWithRetry(String url, String user, String pass,
                                             int attempts, Duration wait) throws Exception {
         Method m = App.class.getDeclaredMethod(
@@ -58,6 +77,7 @@ public class AppTest {
         return (Connection) m.invoke(null, url, user, pass, attempts, wait);
     }
 
+    /** Call private printTable(...) */
     private void callPrintTable(String title,
                                 String[] headers,
                                 List<String[]> rows,
@@ -73,11 +93,14 @@ public class AppTest {
         m.invoke(null, title, headers, rows, rightAlign);
     }
 
-    // ---------- basic object / helper tests ----------
+    // -------------------------------------------------------------------------
+    // Basic App object + add() method tests
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("App object can be constructed")
     void appCanBeCreated() {
+        // Simply ensures constructor works
         App app = new App();
         assertNotNull(app);
     }
@@ -106,25 +129,36 @@ public class AppTest {
         assertEquals(7, result);
     }
 
-    // ---------- env() tests ----------5.
+    // -------------------------------------------------------------------------
+    // env() tests
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("env() returns default when variable is missing")
     void envReturnsDefaultWhenMissing() throws Exception {
+        // Provide a key that definitely does not exist
         String key = "THIS_ENV_SHOULD_NOT_EXIST_XYZ123";
         String value = callEnv(key, "default-value");
+
+        // Should return the default
         assertEquals("default-value", value);
     }
 
-    // ---------- line() formatting tests ----------4.
+    // -------------------------------------------------------------------------
+    // line() tests — table border creation
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("line() builds correct ASCII border for two columns")
     void lineBuildsAsciiBorderForTwoColumns() throws Exception {
-        int[] widths = {3, 4};  // column widths
+        int[] widths = {3, 4};  // widths of columns
+
+        // Call App.line()
         String line = callLine("+", "+", "+", widths);
 
-        // In ASCII mode we expect: +-----+------+  (3+2 dashes, then 4+2)
+        // Expected ASCII border:
+        // +-----+------+
+        // dash count = colWidth + 2 padding spaces
         assertEquals(
                 "+-----+------+",
                 line,
@@ -132,52 +166,61 @@ public class AppTest {
         );
     }
 
-    // ---------- row() formatting tests ----------3.
+    // -------------------------------------------------------------------------
+    // row() tests — formatting of table rows
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("row() left-aligns text by default")
     void rowBuildsLeftAlignedRow() throws Exception {
-        String[] cells = {"A", "BB"};
-        int[] widths = {3, 5};
-        boolean[] rightAlign = {false, false};
+        String[] cells = {"A", "BB"}; // test values
+        int[] widths = {3, 5};        // column widths
+        boolean[] rightAlign = {false, false}; // left-align both
 
         String row = callRow(cells, widths, rightAlign);
 
-        // Actual output of row(): "| A   | BB    |"
+        // Expected row: each cell padded on the right
         assertEquals("| A   | BB    |", row);
     }
 
     @Test
     @DisplayName("row() right-aligns numeric column when requested")
     void rowBuildsRightAlignedRow() throws Exception {
+        // Numeric cells
         String[] cells = {"7", "42"};
         int[] widths = {3, 5};
         boolean[] rightAlign = {true, true};
 
+        // Right alignment -> padded on the left
         String row = callRow(cells, widths, rightAlign);
 
-        // width 3 -> "  7"; width 5 -> "   42"
         assertEquals("|   7 |    42 |", row);
     }
 
-    // ---------- connectWithRetry() failure path test ----------2.
+    // -------------------------------------------------------------------------
+    // connectWithRetry() failure branch test
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("connectWithRetry() throws after failed attempt with bad URL")
     void connectWithRetryFailsForInvalidUrl() {
+        // special test URL "test://fail" triggers forced failure
         String badUrl = "test://fail";
 
-        // Just assert that some exception is thrown; message may be null.
         assertThrows(Exception.class, () -> {
+            // Only 1 attempt, guaranteed failure
             callConnectWithRetry(badUrl, "app", "app123", 1, Duration.ofMillis(10));
         });
     }
 
-    // ---------- demo output test (prints sample table) ----------..1.
+    // -------------------------------------------------------------------------
+    // Demonstration table print test
+    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("Demo: prints sample world report table")
     void demoPrintsSampleTable() {
+        // Does not assert content — just checks printTable does NOT throw errors
         assertDoesNotThrow(() -> {
             String title = "Sample World Report (Unit Test)";
             String[] headers = {"Code", "Name", "Population"};
@@ -186,10 +229,9 @@ public class AppTest {
             rows.add(new String[]{"AAA", "Testland", "123456"});
             rows.add(new String[]{"BBB", "Examplestan", "987654"});
 
-            boolean[] rightAlign = {false, false, true};
+            boolean[] rightAlign = {false, false, true}; // last column right-aligned
 
             callPrintTable(title, headers, rows, rightAlign);
         });
     }
-
 }
